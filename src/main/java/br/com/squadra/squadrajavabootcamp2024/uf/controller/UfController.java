@@ -2,6 +2,7 @@ package br.com.squadra.squadrajavabootcamp2024.uf.controller;
 
 import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfRequestDTO;
 import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.uf.model.UfModel;
 import br.com.squadra.squadrajavabootcamp2024.uf.service.UfService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -31,13 +32,19 @@ public class UfController {
             @RequestParam(name = "nome", required = false) String nome,
             @RequestParam(name = "status", required = false) Integer status
     ){
-
         if (isBuscaSomentePorStatus(codigoUF, sigla, nome, status)){
             List<UfResponseDTO> listaUF = ufService.buscarSomentePorStatus(status);
             return ResponseEntity.ok(listaUF);
         }
         Object response = ufService.buscarPorCodigoUFOrSiglaOrNome(codigoUF, sigla, nome);
         return ResponseEntity.ok(response);
+    }
+
+
+    @PutMapping
+    public ResponseEntity<List<UfResponseDTO>> atualizarUF(@Valid @RequestBody UfModel ufModel){
+        List<UfResponseDTO> listaUF = ufService.atualizarUF(ufModel);
+        return ResponseEntity.ok(listaUF);
     }
 
     private boolean isBuscaSomentePorStatus(Long codigoUF, String sigla, String nome, Integer status){
