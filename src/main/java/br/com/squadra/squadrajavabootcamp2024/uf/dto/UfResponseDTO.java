@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 public class UfResponseDTO {
 
-    private long codigoUF;
+    private Long codigoUF;
 
     private String sigla;
 
