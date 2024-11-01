@@ -40,10 +40,15 @@ public class UfController {
         return ResponseEntity.ok(response);
     }
 
-
     @PutMapping
     public ResponseEntity<List<UfResponseDTO>> atualizarUF(@Valid @RequestBody UfModel ufModel){
         List<UfResponseDTO> listaUF = ufService.atualizarUF(ufModel);
+        return ResponseEntity.ok(listaUF);
+    }
+
+    @DeleteMapping("/{codigoUF}")
+    public ResponseEntity<List<UfResponseDTO>> deletarUF(@PathVariable Long codigoUF){
+        List<UfResponseDTO> listaUF = ufService.deletarUF(codigoUF);
         return ResponseEntity.ok(listaUF);
     }
 

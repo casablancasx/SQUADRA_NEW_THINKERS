@@ -70,4 +70,13 @@ public class UfService {
             throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
         }
     }
+
+    public List<UfResponseDTO> deletarUF(Long codigoUF) {
+        Optional<UfModel> optional = repository.findByCodigoUF(codigoUF);
+        if (optional.isEmpty()){
+            throw new ResourceNotFoundException("O códigoUF("+codigoUF+") não foi encontrado.");
+        }
+        repository.delete(optional.get());
+        return repository.findAllByOrderByCodigoUFDesc().stream().map(mapper::toResponseDTO).toList();
+    }
 }
