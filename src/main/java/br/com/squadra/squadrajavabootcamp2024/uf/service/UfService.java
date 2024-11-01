@@ -10,7 +10,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -31,5 +33,18 @@ public class UfService {
         }catch (DataIntegrityViolationException e){
             throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
         }
+    }
+
+    public List<UfResponseDTO> buscarSomentePorStatus(Integer status) {
+        List<UfModel> lista = repository.findByStatusOrderByCodigoUFDesc(status);
+        return lista.stream().map(mapper::toResponseDTO).toList();
+    }
+
+    public Object buscarPorCodigoUFOrSiglaOrNome(Long codigoUF, String sigla, String nome) {
+        Optional<UfModel> optional = repository.findByCodigoUFOrSiglaOrNome(codigoUF, sigla, nome);
+        if (optional.isEmpty()){
+            return Collections.emptyList();
+        }
+        return mapper.toResponseDTO(optional.get());
     }
 }
