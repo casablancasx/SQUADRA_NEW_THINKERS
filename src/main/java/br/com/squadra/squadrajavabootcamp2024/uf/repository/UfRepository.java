@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface UfRepository  extends JpaRepository<UfModel, Long> {
 
-    List<UfModel> findAllByOrderByIdDesc();
+    List<UfModel> findAllByOrderByCodigoUFDesc();
 
     Optional<UfModel> findByCodigoUFOrSiglaOrNome(Long codigoUF, String sigla, String nome);
 
