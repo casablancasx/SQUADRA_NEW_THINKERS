@@ -36,27 +36,25 @@ public class UfService {
         }
     }
 
-    public List<UfResponseDTO> buscarSomentePorStatus(Integer status) {
-        List<UfModel> lista = repository.findByStatusOrderByCodigoUFDesc(status);
-        return lista.stream().map(mapper::toResponseDTO).toList();
+    public Object buscarPorFiltro(Long codigoUF, String sigla, String nome, Integer status){
+        List<UfModel> listaUfs = repository.findElementsByCodigoUFOrSiglaOrNomeOrStatus(codigoUF, sigla, nome, status);
+        if (retornoDeveriaSerLista(codigoUF, sigla, nome, status, listaUfs)){
+            return listaUfs.stream().map(mapper::toResponseDTO).toList();
+        }
+        return listaUfs.isEmpty() ? Collections.emptyList() : mapper.toResponseDTO(listaUfs.get(0));
     }
 
-    public Object buscarPorCodigoUFOrSiglaOrNome(Long codigoUF, String sigla, String nome) {
-        Optional<UfModel> optional = repository.findByCodigoUFOrSiglaOrNome(codigoUF, sigla, nome);
-        if (optional.isEmpty()){
-            return Collections.emptyList();
-        }
-        return mapper.toResponseDTO(optional.get());
+
+    private boolean retornoDeveriaSerLista(Long codigoUF, String sigla, String nome, Integer status, List<UfModel> listaUfs){
+        return (codigoUF == null && sigla == null && nome == null && status != null) || listaUfs.size() > 1;
     }
 
     public List<UfResponseDTO> atualizarUF(UfModel updatedUf){
-
         try{
             Optional<UfModel> optional = repository.findByCodigoUF(updatedUf.getCodigoUF());
             if (optional.isEmpty()){
                 throw new ResourceNotFoundException("O códigoUF("+updatedUf.getCodigoUF()+") não foi encontrado.");
             }
-
             UfModel modelAtualizado = UfModel.builder().
                     codigoUF(updatedUf.getCodigoUF()).
                     sigla(updatedUf.getSigla()).

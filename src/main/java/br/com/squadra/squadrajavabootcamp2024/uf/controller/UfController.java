@@ -32,11 +32,7 @@ public class UfController {
             @RequestParam(name = "nome", required = false) String nome,
             @RequestParam(name = "status", required = false) Integer status
     ){
-        if (isBuscaSomentePorStatus(codigoUF, sigla, nome, status)){
-            List<UfResponseDTO> listaUF = ufService.buscarSomentePorStatus(status);
-            return ResponseEntity.ok(listaUF);
-        }
-        Object response = ufService.buscarPorCodigoUFOrSiglaOrNome(codigoUF, sigla, nome);
+        Object response = ufService.buscarPorFiltro(codigoUF, sigla, nome, status);
         return ResponseEntity.ok(response);
     }
 
@@ -52,7 +48,4 @@ public class UfController {
         return ResponseEntity.ok(listaUF);
     }
 
-    private boolean isBuscaSomentePorStatus(Long codigoUF, String sigla, String nome, Integer status){
-        return codigoUF == null && sigla == null && nome == null && status != null;
-    }
 }
