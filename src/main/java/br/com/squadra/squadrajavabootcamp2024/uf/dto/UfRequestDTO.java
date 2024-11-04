@@ -24,8 +24,8 @@ public class UfRequestDTO {
     private String nome;
 
     @NotNull(message = "O campo status é obrigatório")
-    @Min(value = 0, message = "O status deve ser 0 ou 1")
-    @Max(value = 1, message = "O status deve ser 0 ou 1")
+    @Min(value = 1, message = "O status deve ser 1 ou 2")
+    @Max(value = 2, message = "O status deve ser 1 ou 2")
     private Integer status;
 
 }
