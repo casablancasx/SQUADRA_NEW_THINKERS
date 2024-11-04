@@ -1,5 +1,6 @@
 package br.com.squadra.squadrajavabootcamp2024.modules.uf.service;
 
+import br.com.squadra.squadrajavabootcamp2024.exceptions.InvalidArgumentTypeException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfRequestDTO;
@@ -10,6 +11,7 @@ import br.com.squadra.squadrajavabootcamp2024.modules.uf.repository.UfRepository
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +35,8 @@ public class UfService {
 
         }catch (DataIntegrityViolationException e){
             throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
+        }catch (MethodArgumentTypeMismatchException e){
+            throw new InvalidArgumentTypeException("O códigoUF informado é inválido.");
         }
     }
 

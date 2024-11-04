@@ -1,11 +1,13 @@
 package br.com.squadra.squadrajavabootcamp2024.infra;
 
+import br.com.squadra.squadrajavabootcamp2024.exceptions.InvalidArgumentTypeException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
 import java.util.Objects;
@@ -40,4 +42,12 @@ public class RestExceptionHandler {
         return ResponseEntity.status(error.getStatus()).body(error);
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<StandardError> invalidArgumentTypeException(MethodArgumentTypeMismatchException exception){
+        StandardError error = StandardError.builder()
+                .mensagem("O tipo de dado esperado é um número e você informou: " + exception.getValue())
+                .status(422)
+                .build();
+        return ResponseEntity.status(error.getStatus()).body(error);
+    }
 }
