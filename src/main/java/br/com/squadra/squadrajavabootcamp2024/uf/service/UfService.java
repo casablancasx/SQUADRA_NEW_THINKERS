@@ -51,18 +51,8 @@ public class UfService {
 
     public List<UfResponseDTO> atualizarUF(UfModel updatedUf){
         try{
-            Optional<UfModel> optional = repository.findByCodigoUF(updatedUf.getCodigoUF());
-            if (optional.isEmpty()){
-                throw new ResourceNotFoundException("O códigoUF("+updatedUf.getCodigoUF()+") não foi encontrado.");
-            }
-            UfModel modelAtualizado = UfModel.builder().
-                    codigoUF(updatedUf.getCodigoUF()).
-                    sigla(updatedUf.getSigla()).
-                    nome(updatedUf.getNome()).
-                    status(updatedUf.getStatus()).
-                    build();
-
-            repository.save(modelAtualizado);
+            UfModel uf = repository.findByCodigoUF(updatedUf.getCodigoUF()).orElseThrow(() -> new ResourceNotFoundException("O códigoUF("+updatedUf.getCodigoUF()+") não foi encontrado."));
+            mapper.atualizarUF(updatedUf, uf);
             return repository.findAllByOrderByCodigoUFDesc().stream().map(mapper::toResponseDTO).toList();
         }catch (DataIntegrityViolationException e){
             throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");

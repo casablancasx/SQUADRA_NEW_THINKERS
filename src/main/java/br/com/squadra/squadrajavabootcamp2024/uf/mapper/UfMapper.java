@@ -16,4 +16,6 @@ public interface UfMapper {
     UfModel toEntity(UfRequestDTO requestDTO);
 
     UfResponseDTO toResponseDTO(UfModel model);
+
+    void atualizarUF(UfModel updatedUf, UfModel modelAtualizado);
 }
