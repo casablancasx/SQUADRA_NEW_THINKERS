@@ -21,6 +21,7 @@ public class MunicipioModel {
     @JoinColumn(name = "codigoUF")
     private UfModel uf;
 
+    @Column(unique = true)
     private String nome;
 
     private Integer status;

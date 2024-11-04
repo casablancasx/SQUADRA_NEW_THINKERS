@@ -14,12 +14,12 @@ import lombok.Setter;
 @Builder
 public class UfRequestDTO {
 
-    @NotNull(message = "O campo sigla é obrigatório")
+    @NotBlank(message = "O campo sigla é obrigatório")
     @Size(min = 2, max = 2, message = "A sigla deve ter 2 caracteres")
     @Pattern(regexp = "^[A-Z]{2}$", message = "A sigla deve conter apenas letras maiúsculas")
     private String sigla;
 
-    @NotNull(message = "O campo nome é obrigatório")
+    @NotBlank(message = "O campo nome é obrigatório")
     @Pattern(regexp = "^[A-ZÀ-Úa-zà-ú ]{1,50}$", message = "O nome deve conter apenas letras e espaços")
     private String nome;
 
