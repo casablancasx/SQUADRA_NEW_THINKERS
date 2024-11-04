@@ -1,9 +1,9 @@
-package br.com.squadra.squadrajavabootcamp2024.uf.controller;
+package br.com.squadra.squadrajavabootcamp2024.modules.uf.controller;
 
-import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfRequestDTO;
-import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfResponseDTO;
-import br.com.squadra.squadrajavabootcamp2024.uf.model.UfModel;
-import br.com.squadra.squadrajavabootcamp2024.uf.service.UfService;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfRequestDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.model.UfModel;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.service.UfService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

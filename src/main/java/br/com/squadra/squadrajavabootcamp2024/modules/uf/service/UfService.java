@@ -1,12 +1,12 @@
-package br.com.squadra.squadrajavabootcamp2024.uf.service;
+package br.com.squadra.squadrajavabootcamp2024.modules.uf.service;
 
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
-import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfRequestDTO;
-import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfResponseDTO;
-import br.com.squadra.squadrajavabootcamp2024.uf.mapper.UfMapper;
-import br.com.squadra.squadrajavabootcamp2024.uf.model.UfModel;
-import br.com.squadra.squadrajavabootcamp2024.uf.repository.UfRepository;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfRequestDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.mapper.UfMapper;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.model.UfModel;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.repository.UfRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
