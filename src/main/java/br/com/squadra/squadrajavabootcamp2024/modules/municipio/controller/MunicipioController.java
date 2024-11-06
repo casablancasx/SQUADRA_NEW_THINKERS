@@ -1,7 +1,8 @@
 package br.com.squadra.squadrajavabootcamp2024.modules.municipio.controller;
 
-import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioRequestDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.service.MunicipioService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/municipio")
@@ -20,7 +20,7 @@ public class MunicipioController {
 
 
     @PostMapping
-    public ResponseEntity<List<MunicipioResponseDTO>> cadastrarMunicipio(@Valid @RequestBody MunicipioRequestDTO requestDTO){
+    public ResponseEntity<List<MunicipioResponseDTO>> cadastrarMunicipio(@Valid @RequestBody MunicipioCreateDTO requestDTO){
         List<MunicipioResponseDTO> listaMunicipio = municipioService.cadastrarMunicipio(requestDTO);
         return ResponseEntity.ok(listaMunicipio);
     }
@@ -34,5 +34,11 @@ public class MunicipioController {
     ){
         Object response = municipioService.buscarPorFiltro(codigoMunicipio, codigoUF, nome, status);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping
+    public ResponseEntity<List<MunicipioResponseDTO>> atualizarMunicipio(@Valid @RequestBody MunicipioUpdateDTO municipioAtualizado){
+        List<MunicipioResponseDTO> listaMunicipio = municipioService.atualizarMunicipio(municipioAtualizado);
+        return ResponseEntity.ok(listaMunicipio);
     }
 }

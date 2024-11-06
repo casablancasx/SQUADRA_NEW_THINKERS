@@ -1,18 +1,16 @@
 package br.com.squadra.squadrajavabootcamp2024.modules.municipio.service;
 
-import br.com.squadra.squadrajavabootcamp2024.exceptions.InvalidArgumentTypeException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
-import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioRequestDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.mapper.MunicipioMapper;
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.model.MunicipioModel;
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.repository.MunicipioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,12 +23,12 @@ public class MunicipioService {
 
     private final MunicipioMapper mapper;
 
-    public List<MunicipioResponseDTO> cadastrarMunicipio(MunicipioRequestDTO request) {
+    public List<MunicipioResponseDTO> cadastrarMunicipio(MunicipioCreateDTO request) {
         try {
             municipioRepository.save(mapper.toEntity(request));
             return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
                     .map(mapper::toReponseDTO)
-                    .collect(Collectors.toList());
+                    .toList();
         }catch (DataIntegrityViolationException e){
             throw new ResourceAlreadyExistException("Não foi possível incluir município no banco de dados. Já existe um município de nome " + request.getNome() + " cadastrado.");
         }
@@ -47,8 +45,7 @@ public class MunicipioService {
             }
 
             return municipios.stream()
-                    .map(mapper::toReponseDTO)
-                    .collect(Collectors.toList());
+                    .map(mapper::toReponseDTO).toList();
     }
 
     private boolean retornoNaoDeveriaSerUmaLista(Long codigoMunicipio, Long codigoUF, String nome, Integer status){
@@ -58,4 +55,17 @@ public class MunicipioService {
                 status == null;
     }
 
+    public List<MunicipioResponseDTO> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
+        try {
+            MunicipioModel municipioExistente = municipioRepository.findById(municipioAtualizado.getCodigoMunicipio())
+                    .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
+
+            mapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
+
+            return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
+                    .map(mapper::toReponseDTO).toList();
+        }catch (DataIntegrityViolationException e){
+            throw new ResourceAlreadyExistException("Não foi possível atualizar município no banco de dados. Já existe um município de nome " + municipioAtualizado.getNome() + " cadastrado.");
+        }
+    }
 }

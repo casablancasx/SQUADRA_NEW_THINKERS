@@ -17,12 +17,14 @@ public class MunicipioModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigoMunicipio;
 
+    @Column(unique = true, nullable = false)
+    private String nome;
+
+    @Column(nullable = false)
+    private Integer status;
+
     @ManyToOne
     @JoinColumn(name = "codigoUF")
     private UfModel uf;
 
-    @Column(unique = true)
-    private String nome;
-
-    private Integer status;
 }
