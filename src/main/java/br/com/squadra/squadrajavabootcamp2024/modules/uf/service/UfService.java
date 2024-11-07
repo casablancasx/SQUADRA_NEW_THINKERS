@@ -50,8 +50,6 @@ public class UfService {
     }
 
 
-
-
     public List<UfResponseDTO> atualizarUF(UfUpdateDTO ufAtualizada){
         try{
             UfModel ufExistente = repository.findByCodigoUF(ufAtualizada.getCodigoUF()).orElseThrow(() -> new ResourceNotFoundException("O códigoUF("+ufAtualizada.getCodigoUF()+") não foi encontrado."));

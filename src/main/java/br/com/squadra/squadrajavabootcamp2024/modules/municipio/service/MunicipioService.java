@@ -68,4 +68,13 @@ public class MunicipioService {
             throw new ResourceAlreadyExistException("Não foi possível atualizar município no banco de dados. Já existe um município de nome " + municipioAtualizado.getNome() + " cadastrado.");
         }
     }
+
+    public List<MunicipioResponseDTO> deletarMunicipio(Long codigoMunicipio) {
+        MunicipioModel municipio = municipioRepository.findById(codigoMunicipio)
+                .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
+        municipioRepository.delete(municipio);
+        return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
+                .map(mapper::toReponseDTO)
+                .collect(Collectors.toList());
+    }
 }
