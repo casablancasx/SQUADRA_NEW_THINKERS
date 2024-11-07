@@ -1,9 +1,10 @@
-package br.com.squadra.squadrajavabootcamp2024.uf.controller;
+package br.com.squadra.squadrajavabootcamp2024.modules.uf.controller;
 
-import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfRequestDTO;
-import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfResponseDTO;
-import br.com.squadra.squadrajavabootcamp2024.uf.model.UfModel;
-import br.com.squadra.squadrajavabootcamp2024.uf.service.UfService;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfCreateDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.model.UfModel;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.service.UfService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UfController {
     private final UfService ufService;
 
     @PostMapping
-    public ResponseEntity<List<UfResponseDTO>> cadastrarUF(@Valid @RequestBody UfRequestDTO requestDTO){
+    public ResponseEntity<List<UfResponseDTO>> cadastrarUF(@Valid @RequestBody UfCreateDTO requestDTO){
         List<UfResponseDTO> listaUF = ufService.cadastrarUF(requestDTO);
         return ResponseEntity.ok(listaUF);
     }
@@ -37,8 +38,8 @@ public class UfController {
     }
 
     @PutMapping
-    public ResponseEntity<List<UfResponseDTO>> atualizarUF(@Valid @RequestBody UfModel ufModel){
-        List<UfResponseDTO> listaUF = ufService.atualizarUF(ufModel);
+    public ResponseEntity<List<UfResponseDTO>> atualizarUF(@Valid @RequestBody UfUpdateDTO ufAtualizada){
+        List<UfResponseDTO> listaUF = ufService.atualizarUF(ufAtualizada);
         return ResponseEntity.ok(listaUF);
     }
 

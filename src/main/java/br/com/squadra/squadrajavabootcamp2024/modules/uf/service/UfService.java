@@ -1,15 +1,18 @@
-package br.com.squadra.squadrajavabootcamp2024.uf.service;
+package br.com.squadra.squadrajavabootcamp2024.modules.uf.service;
 
+import br.com.squadra.squadrajavabootcamp2024.exceptions.InvalidArgumentTypeException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
-import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfRequestDTO;
-import br.com.squadra.squadrajavabootcamp2024.uf.dto.UfResponseDTO;
-import br.com.squadra.squadrajavabootcamp2024.uf.mapper.UfMapper;
-import br.com.squadra.squadrajavabootcamp2024.uf.model.UfModel;
-import br.com.squadra.squadrajavabootcamp2024.uf.repository.UfRepository;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfCreateDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.dto.UfUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.mapper.UfMapper;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.model.UfModel;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.repository.UfRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +27,7 @@ public class UfService {
     private final UfMapper mapper;
 
 
-    public List<UfResponseDTO> cadastrarUF(UfRequestDTO requestDTO){
+    public List<UfResponseDTO> cadastrarUF(UfCreateDTO requestDTO){
         try {
             UfModel model = mapper.toEntity(requestDTO);
             repository.save(model);
@@ -33,6 +36,8 @@ public class UfService {
 
         }catch (DataIntegrityViolationException e){
             throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
+        }catch (MethodArgumentTypeMismatchException e){
+            throw new InvalidArgumentTypeException("O códigoUF informado é inválido.");
         }
     }
 
@@ -45,14 +50,10 @@ public class UfService {
     }
 
 
-    private boolean retornoDeveriaSerLista(Long codigoUF, String sigla, String nome, Integer status, List<UfModel> listaUfs){
-        return (codigoUF == null && sigla == null && nome == null && status != null) || listaUfs.size() > 1;
-    }
-
-    public List<UfResponseDTO> atualizarUF(UfModel updatedUf){
+    public List<UfResponseDTO> atualizarUF(UfUpdateDTO ufAtualizada){
         try{
-            UfModel uf = repository.findByCodigoUF(updatedUf.getCodigoUF()).orElseThrow(() -> new ResourceNotFoundException("O códigoUF("+updatedUf.getCodigoUF()+") não foi encontrado."));
-            mapper.atualizarUF(updatedUf, uf);
+            UfModel ufExistente = repository.findByCodigoUF(ufAtualizada.getCodigoUF()).orElseThrow(() -> new ResourceNotFoundException("O códigoUF("+ufAtualizada.getCodigoUF()+") não foi encontrado."));
+            mapper.atualizarUF(ufAtualizada, ufExistente);
             return repository.findAllByOrderByCodigoUFDesc().stream().map(mapper::toResponseDTO).toList();
         }catch (DataIntegrityViolationException e){
             throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
@@ -66,5 +67,17 @@ public class UfService {
         }
         repository.delete(optional.get());
         return repository.findAllByOrderByCodigoUFDesc().stream().map(mapper::toResponseDTO).toList();
+    }
+
+
+    private boolean retornoDeveriaSerLista(Long codigoUF, String sigla, String nome, Integer status, List<UfModel> listaUfs) {
+        return somenteStatusNaoEhNulo(codigoUF, sigla, nome, status) || listaUfs.size() > 1;
+    }
+
+    private boolean somenteStatusNaoEhNulo(Long codigoUF, String sigla, String nome, Integer status) {
+        return codigoUF == null &&
+                sigla == null &&
+                nome == null &&
+                status != null;
     }
 }

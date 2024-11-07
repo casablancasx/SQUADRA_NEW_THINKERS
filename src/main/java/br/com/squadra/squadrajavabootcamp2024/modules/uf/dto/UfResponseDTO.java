@@ -1,4 +1,4 @@
-package br.com.squadra.squadrajavabootcamp2024.uf.dto;
+package br.com.squadra.squadrajavabootcamp2024.modules.uf.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

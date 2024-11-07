@@ -1,6 +1,6 @@
-package br.com.squadra.squadrajavabootcamp2024.uf.repository;
+package br.com.squadra.squadrajavabootcamp2024.modules.uf.repository;
 
-import br.com.squadra.squadrajavabootcamp2024.uf.model.UfModel;
+import br.com.squadra.squadrajavabootcamp2024.modules.uf.model.UfModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
