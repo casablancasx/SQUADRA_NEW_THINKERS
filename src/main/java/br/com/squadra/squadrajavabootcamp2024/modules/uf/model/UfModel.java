@@ -24,13 +24,13 @@ public class UfModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigoUF;
 
-    @Column(unique = true, nullable = false)
+    @Column(length = 2, unique = true, nullable = false)
     private String sigla;
 
     @Column(length = 50, unique = true)
     private String nome;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private Integer status;
 
     @OneToMany(mappedBy = "uf", cascade = CascadeType.ALL)

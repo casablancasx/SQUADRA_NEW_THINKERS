@@ -20,7 +20,7 @@ public class UfCreateDTO {
     private String sigla;
 
     @NotBlank(message = "O campo nome é obrigatório")
-    @Pattern(regexp = "^[A-ZÀ-Úa-zà-ú ]{1,50}$", message = "O nome deve conter apenas letras e espaços")
+    @Pattern(regexp = "^[A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ\\s]+$\n", message = "O nome deve conter apenas letras maiúsculas")
     private String nome;
 
     @NotNull(message = "O campo status é obrigatório")

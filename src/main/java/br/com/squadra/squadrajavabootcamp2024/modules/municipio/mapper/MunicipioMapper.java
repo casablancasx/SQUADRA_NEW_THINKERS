@@ -12,10 +12,13 @@ public interface MunicipioMapper {
 
     @Mapping(target = "codigoMunicipio", ignore = true)
     @Mapping(source = "codigoUF", target = "uf.codigoUF")
+    @Mapping(target = "bairros", ignore = true)
     MunicipioModel toEntity(MunicipioCreateDTO requestDTO);
 
     @Mapping(source = "uf.codigoUF", target = "codigoUF")
     MunicipioResponseDTO toReponseDTO(MunicipioModel model);
 
+    @Mapping(target = "uf", ignore = true)
+    @Mapping(target = "bairros", ignore = true)
     void atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado, @MappingTarget MunicipioModel municipio);
 }
