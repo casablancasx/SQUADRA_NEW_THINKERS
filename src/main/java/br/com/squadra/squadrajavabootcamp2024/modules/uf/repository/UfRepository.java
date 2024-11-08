@@ -21,7 +21,7 @@ public interface UfRepository  extends JpaRepository<UfModel, Long> {
             "AND (:status IS NULL OR uf.status = :status)" +
             "ORDER BY uf.codigoUF DESC"
     )
-    List<UfModel> findElementsByCodigoUFOrSiglaOrNomeOrStatus(
+    List<UfModel> findByFiltro(
             @Param("codigoUF") Long codigoUF,
             @Param("sigla") String sigla,
             @Param("nome") String nome,

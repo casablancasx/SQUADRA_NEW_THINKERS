@@ -34,6 +34,8 @@ public class MunicipioService {
         }
     }
 
+
+    //TODO REFATORAR
     public Object buscarPorFiltro(Long codigoMunicipio, Long codigoUF, String nome, Integer status) {
 
             List<MunicipioModel> municipios = municipioRepository.findByFiltro(codigoMunicipio, codigoUF, nome, status);

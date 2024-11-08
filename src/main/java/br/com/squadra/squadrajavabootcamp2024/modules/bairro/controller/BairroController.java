@@ -7,10 +7,7 @@ import br.com.squadra.squadrajavabootcamp2024.modules.bairro.service.BairroServi
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +24,20 @@ public class BairroController {
         List<BairroResponseDTO> listaBairros = bairroService.cadastrarBairro(request);
         return ResponseEntity.ok(listaBairros);
     }
+
+    @GetMapping
+    public ResponseEntity<Object> buscarBairroPorFiltro(
+            @RequestParam(required = false) Long codigoBairro,
+            @RequestParam(required = false) Long codigoMunicipio,
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) Integer status
+    )
+    {
+        Object response = bairroService.buscarBairroPorFiltro(codigoBairro, codigoMunicipio, nome, status);
+        return ResponseEntity.ok(response);
+
+    }
+
 
 
 }

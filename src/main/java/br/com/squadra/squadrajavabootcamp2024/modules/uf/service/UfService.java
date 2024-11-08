@@ -42,7 +42,7 @@ public class UfService {
     }
 
     public Object buscarPorFiltro(Long codigoUF, String sigla, String nome, Integer status){
-        List<UfModel> listaUfs = repository.findElementsByCodigoUFOrSiglaOrNomeOrStatus(codigoUF, sigla, nome, status);
+        List<UfModel> listaUfs = repository.findByFiltro(codigoUF, sigla, nome, status);
         if (retornoDeveriaSerLista(codigoUF, sigla, nome, status, listaUfs)){
             return listaUfs.stream().map(mapper::toResponseDTO).toList();
         }
