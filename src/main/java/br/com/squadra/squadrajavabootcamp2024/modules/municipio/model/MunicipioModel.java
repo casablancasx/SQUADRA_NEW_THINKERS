@@ -1,8 +1,11 @@
 package br.com.squadra.squadrajavabootcamp2024.modules.municipio.model;
 
+import br.com.squadra.squadrajavabootcamp2024.modules.bairro.model.BairroModel;
 import br.com.squadra.squadrajavabootcamp2024.modules.uf.model.UfModel;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "tb_municipio")
@@ -26,5 +29,8 @@ public class MunicipioModel {
     @ManyToOne
     @JoinColumn(name = "codigoUF")
     private UfModel uf;
+
+    @OneToMany(mappedBy = "municipio", cascade = CascadeType.ALL)
+    private List<BairroModel> bairros;
 
 }
