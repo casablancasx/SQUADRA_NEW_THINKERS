@@ -63,6 +63,7 @@ public class MunicipioService {
                     .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
 
             mapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
+            municipioRepository.save(municipioExistente);
 
             return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
                     .map(mapper::toReponseDTO).toList();

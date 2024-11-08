@@ -3,6 +3,7 @@ package br.com.squadra.squadrajavabootcamp2024.modules.bairro.controller;
 
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.dto.BairroCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.dto.BairroResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.bairro.dto.BairroUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.service.BairroService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,12 @@ public class BairroController {
     {
         Object response = bairroService.buscarBairroPorFiltro(codigoBairro, codigoMunicipio, nome, status);
         return ResponseEntity.ok(response);
+    }
 
+    @PutMapping
+    public ResponseEntity<List<BairroResponseDTO>> atualizarBairro(@Valid @RequestBody BairroUpdateDTO bairroAtualizado) {
+        List<BairroResponseDTO> listaBairros = bairroService.atualizarBairro(bairroAtualizado);
+        return ResponseEntity.ok(listaBairros);
     }
 
 

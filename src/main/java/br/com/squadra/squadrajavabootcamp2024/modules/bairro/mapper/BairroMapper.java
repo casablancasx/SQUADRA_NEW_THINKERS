@@ -2,11 +2,9 @@ package br.com.squadra.squadrajavabootcamp2024.modules.bairro.mapper;
 
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.dto.BairroCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.dto.BairroResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.modules.bairro.dto.BairroUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.model.BairroModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
@@ -18,4 +16,7 @@ public interface BairroMapper {
 
     @Mapping(source = "municipio.codigoMunicipio", target = "codigoMunicipio")
     BairroResponseDTO toResponseDTO(BairroModel model);
+
+    @Mapping(source = "codigoMunicipio", target = "municipio.codigoMunicipio")
+    void atualizar(BairroUpdateDTO bairroAtualizado, @MappingTarget BairroModel bairroExistente);
 }
