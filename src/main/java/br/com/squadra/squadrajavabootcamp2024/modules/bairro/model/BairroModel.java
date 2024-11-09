@@ -1,8 +1,11 @@
 package br.com.squadra.squadrajavabootcamp2024.modules.bairro.model;
 
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.model.MunicipioModel;
+import br.com.squadra.squadrajavabootcamp2024.modules.pessoa.model.EnderecoModel;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "tb_bairro")
@@ -25,4 +28,7 @@ public class BairroModel {
     @ManyToOne
     @JoinColumn(name = "codigoMunicipio")
     private MunicipioModel municipio;
+
+    @OneToMany(mappedBy = "bairro", cascade = CascadeType.ALL)
+    private List<EnderecoModel> enderecos;
 }
