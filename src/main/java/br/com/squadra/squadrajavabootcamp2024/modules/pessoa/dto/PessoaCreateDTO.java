@@ -34,7 +34,6 @@ public class PessoaCreateDTO {
     @NotNull(message = "O campo status é obrigatório")
     private Integer status;
 
-
     List<EnderecoCreateDTO> enderecos;
 
 

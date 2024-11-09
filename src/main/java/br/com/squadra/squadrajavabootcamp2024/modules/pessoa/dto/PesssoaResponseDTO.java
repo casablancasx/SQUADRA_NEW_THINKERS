@@ -23,6 +23,8 @@ public class PesssoaResponseDTO {
 
     private String login;
 
+    private String senha;
+
     private Integer status;
 
     private List<EnderecoModel> enderecos = new ArrayList<>();
