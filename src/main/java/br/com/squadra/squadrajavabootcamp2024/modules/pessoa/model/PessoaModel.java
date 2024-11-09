@@ -24,6 +24,7 @@ public class PessoaModel {
 
     private Integer idade;
 
+    @Column(unique = true)
     private String login;
 
     private String senha;
