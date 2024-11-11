@@ -8,6 +8,7 @@ import br.com.squadra.squadrajavabootcamp2024.modules.municipio.dto.MunicipioUpd
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.mapper.MunicipioMapper;
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.model.MunicipioModel;
 import br.com.squadra.squadrajavabootcamp2024.modules.municipio.repository.MunicipioRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class MunicipioService {
 
     private final MunicipioMapper mapper;
 
+    @Transactional
     public List<MunicipioResponseDTO> cadastrarMunicipio(MunicipioCreateDTO request) {
         try {
             municipioRepository.save(mapper.toEntity(request));

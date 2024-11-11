@@ -12,11 +12,13 @@ public interface BairroMapper {
 
     @Mapping(target = "codigoBairro", ignore = true)
     @Mapping(source = "codigoMunicipio", target = "municipio.codigoMunicipio")
+    @Mapping(target = "enderecos", ignore = true)
     BairroModel toEntity(BairroCreateDTO requestDTO);
 
     @Mapping(source = "municipio.codigoMunicipio", target = "codigoMunicipio")
     BairroResponseDTO toResponseDTO(BairroModel model);
 
     @Mapping(source = "codigoMunicipio", target = "municipio.codigoMunicipio")
+    @Mapping(target = "enderecos", ignore = true)
     void atualizar(BairroUpdateDTO bairroAtualizado, @MappingTarget BairroModel bairroExistente);
 }

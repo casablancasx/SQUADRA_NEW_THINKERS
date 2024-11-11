@@ -12,6 +12,7 @@ import br.com.squadra.squadrajavabootcamp2024.modules.uf.repository.UfRepository
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Collections;
@@ -27,18 +28,19 @@ public class UfService {
     private final UfMapper mapper;
 
 
-    public List<UfResponseDTO> cadastrarUF(UfCreateDTO requestDTO){
-        try {
-            UfModel model = mapper.toEntity(requestDTO);
-            repository.save(model);
-            List<UfModel> todosUfs = repository.findAllByOrderByCodigoUFDesc();
-            return todosUfs.stream().map(mapper::toResponseDTO).toList();
 
-        }catch (DataIntegrityViolationException e){
+    @jakarta.transaction.Transactional
+    @Transactional
+    public List<UfResponseDTO> cadastrarUF(UfCreateDTO requestDTO) throws ResourceAlreadyExistException {
+
+        if (repository.existsBySiglaOrNome(requestDTO.getSigla(), requestDTO.getNome())){
             throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
-        }catch (MethodArgumentTypeMismatchException e){
-            throw new InvalidArgumentTypeException("O códigoUF informado é inválido.");
         }
+
+        UfModel model = mapper.toEntity(requestDTO);
+        repository.save(model);
+        List<UfModel> todosUfs = repository.findAllByOrderByCodigoUFDesc();
+        return todosUfs.stream().map(mapper::toResponseDTO).toList();
     }
 
     public Object buscarPorFiltro(Long codigoUF, String sigla, String nome, Integer status){

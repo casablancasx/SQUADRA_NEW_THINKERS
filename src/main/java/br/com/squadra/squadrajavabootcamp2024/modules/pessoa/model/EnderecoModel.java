@@ -30,6 +30,6 @@ public class EnderecoModel {
     private BairroModel bairro;
 
     @ManyToOne
-    @JoinColumn(name = "codigoPessoa")
+    @JoinColumn(name = "codigoPessoa", nullable = false)
     private PessoaModel pessoa;
 }

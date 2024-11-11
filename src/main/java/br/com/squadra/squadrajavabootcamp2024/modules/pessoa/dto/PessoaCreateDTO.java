@@ -38,7 +38,7 @@ public class PessoaCreateDTO {
 
 
     @AssertTrue(message = "É obrigatório informar ao menos um endereço")
-    public boolean isEnderecosValid() {
+    public  boolean isEnderecosValid() {
         return enderecos != null && !enderecos.isEmpty();
     }
 }

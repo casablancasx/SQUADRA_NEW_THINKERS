@@ -8,6 +8,7 @@ import br.com.squadra.squadrajavabootcamp2024.modules.bairro.dto.BairroUpdateDTO
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.mapper.BairroMapper;
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.model.BairroModel;
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.repository.BairroRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class BairroService {
 
     private final BairroMapper mapper;
 
-
+    @Transactional
     public List<BairroResponseDTO> cadastrarBairro(BairroCreateDTO request) {
         try {
             bairroRepository.save(mapper.toEntity(request));

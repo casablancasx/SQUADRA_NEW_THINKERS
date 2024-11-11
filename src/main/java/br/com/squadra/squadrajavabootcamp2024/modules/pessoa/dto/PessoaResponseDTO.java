@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PesssoaResponseDTO {
+public class PessoaResponseDTO {
 
     private Long codigoPessoa;
 
@@ -27,6 +27,6 @@ public class PesssoaResponseDTO {
 
     private Integer status;
 
-    private List<EnderecoModel> enderecos = new ArrayList<>();
+    private List<EnderecoModel> enderecos;
 
 }

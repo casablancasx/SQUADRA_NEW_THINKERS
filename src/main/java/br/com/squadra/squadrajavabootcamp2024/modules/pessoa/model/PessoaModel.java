@@ -31,6 +31,6 @@ public class PessoaModel {
 
     private Integer status;
 
-    @OneToMany(mappedBy = "pessoaModel", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL)
     private List<EnderecoModel> enderecos;
 }
