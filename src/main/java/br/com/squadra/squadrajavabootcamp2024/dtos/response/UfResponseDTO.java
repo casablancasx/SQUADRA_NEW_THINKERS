@@ -20,5 +20,4 @@ public class UfResponseDTO {
     private String nome;
 
     private Integer status;
-
 }

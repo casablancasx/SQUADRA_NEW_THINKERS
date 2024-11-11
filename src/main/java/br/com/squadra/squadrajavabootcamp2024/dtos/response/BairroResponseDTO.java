@@ -17,4 +17,6 @@ public class BairroResponseDTO {
     private String nome;
 
     private Integer status;
+
+    private MunicipioResponseDTO municipio;
 }

@@ -2,6 +2,7 @@ package br.com.squadra.squadrajavabootcamp2024.controllers;
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.PessoaResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
 import br.com.squadra.squadrajavabootcamp2024.services.PessoaService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class PessoaController {
     private final PessoaService pessoaService;
 
     @PostMapping
-    public ResponseEntity<List<PessoaResponseDTO>> cadastrarPessoa(@Valid @RequestBody PessoaCreateDTO request){
+    public ResponseEntity<List<PessoaModel>> cadastrarPessoa(@Valid @RequestBody PessoaCreateDTO request){
         return ResponseEntity.ok(pessoaService.cadastrarPessoa(request));
     }
 

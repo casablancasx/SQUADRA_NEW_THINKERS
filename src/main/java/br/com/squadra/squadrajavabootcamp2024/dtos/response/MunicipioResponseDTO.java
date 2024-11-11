@@ -16,4 +16,6 @@ public class MunicipioResponseDTO {
     private String nome;
 
     private Integer status;
+
+    private UfResponseDTO uf;
 }

@@ -26,6 +26,6 @@ public class PessoaResponseDTO {
 
     private Integer status;
 
-    private List<EnderecoModel> enderecos;
+    private List<EnderecoResponseDTO> enderecos;
 
 }

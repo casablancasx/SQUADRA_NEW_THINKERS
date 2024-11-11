@@ -20,7 +20,7 @@ public class PessoaService {
     private final PessoaMapper pessoaMapper;
 
 
-    public List<PessoaResponseDTO> cadastrarPessoa(PessoaCreateDTO request) {
+    public List<PessoaModel> cadastrarPessoa(PessoaCreateDTO request) {
 
         if (pessoaRepository.existsByLogin(request.getLogin())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir pessoa no banco de dados. Já existe uma pessoa de login " + request.getLogin() + " cadastrado.");
@@ -30,9 +30,7 @@ public class PessoaService {
         pessoaModel.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoaModel));
         pessoaRepository.save(pessoaModel);
 
-        return pessoaRepository.findAllByOrderByCodigoPessoaDesc().stream()
-                .map(pessoaMapper::toResponseDTO)
-                .toList();
+        return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
 }
 
