@@ -32,5 +32,21 @@ public class PessoaService {
 
         return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
+
+    public Object buscarPessoaPorFiltro(Long codigoPessoa, String login, Integer status) {
+
+        List<PessoaModel> pessoaModelList = pessoaRepository.findByFiltro(codigoPessoa, login, status);
+
+        if (retornoNaoDeveSerUmaLista(codigoPessoa, login, status)) {
+            return pessoaModelList.stream().findFirst().map(pessoaMapper::toResponseDTO).orElse(null);
+        }
+
+        return pessoaModelList;
+    }
+
+
+    private boolean retornoNaoDeveSerUmaLista(Long codigoPessoa, String login, Integer status) {
+        return codigoPessoa != null && login == null && status == null;
+    }
 }
 

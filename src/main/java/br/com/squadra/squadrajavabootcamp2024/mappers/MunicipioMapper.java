@@ -6,16 +6,15 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
 import org.mapstruct.*;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {UfMapper.class})
 public interface MunicipioMapper {
 
     @Mapping(target = "codigoMunicipio", ignore = true)
-    @Mapping(source = "codigoUF", target = "uf.codigoUF")
     @Mapping(target = "bairros", ignore = true)
+    @Mapping(source = "codigoUF", target = "uf.codigoUF")
     MunicipioModel toEntity(MunicipioCreateDTO requestDTO);
 
-    @Mapping(source = "uf.codigoUF", target = "codigoUF")
+
     MunicipioResponseDTO toReponseDTO(MunicipioModel model);
 
     @Mapping(target = "uf", ignore = true)

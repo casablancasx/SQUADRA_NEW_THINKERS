@@ -13,7 +13,7 @@ import org.mapstruct.ReportingPolicy;
 
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.ERROR, uses = {EnderecoMapper.class})
+         uses = {EnderecoMapper.class})
 public interface PessoaMapper {
 
     @Mapping(target = "codigoPessoa", ignore = true)

@@ -7,12 +7,12 @@ import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
 import org.mapstruct.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.ERROR)
+        unmappedTargetPolicy = ReportingPolicy.ERROR,uses = {MunicipioMapper.class})
 public interface BairroMapper {
 
     @Mapping(target = "codigoBairro", ignore = true)
-    @Mapping(source = "codigoMunicipio", target = "municipio.codigoMunicipio")
     @Mapping(target = "enderecos", ignore = true)
+    @Mapping(source = "codigoMunicipio", target = "municipio.codigoMunicipio")
     BairroModel toEntity(BairroCreateDTO requestDTO);
 
     @Mapping(source = "municipio.codigoMunicipio", target = "codigoMunicipio")

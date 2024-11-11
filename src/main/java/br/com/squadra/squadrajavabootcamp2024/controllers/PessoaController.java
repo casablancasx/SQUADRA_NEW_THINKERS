@@ -6,11 +6,9 @@ import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
 import br.com.squadra.squadrajavabootcamp2024.services.PessoaService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +22,13 @@ public class PessoaController {
     @PostMapping
     public ResponseEntity<List<PessoaModel>> cadastrarPessoa(@Valid @RequestBody PessoaCreateDTO request){
         return ResponseEntity.ok(pessoaService.cadastrarPessoa(request));
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> buscarPessoaPorFiltro(@RequestParam(required = false) Long codigoPessoa,
+                                                        @RequestParam(required = false) String login,
+                                                        @RequestParam(required = false) Integer status){
+        return ResponseEntity.ok(pessoaService.buscarPessoaPorFiltro(codigoPessoa,login,status));
     }
 
 
