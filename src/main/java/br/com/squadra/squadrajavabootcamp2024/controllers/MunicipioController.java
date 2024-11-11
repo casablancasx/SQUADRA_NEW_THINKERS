@@ -3,6 +3,7 @@ package br.com.squadra.squadrajavabootcamp2024.controllers;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.MunicipioCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.MunicipioResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
 import br.com.squadra.squadrajavabootcamp2024.services.MunicipioService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,8 +21,8 @@ public class MunicipioController {
 
 
     @PostMapping
-    public ResponseEntity<List<MunicipioResponseDTO>> cadastrarMunicipio(@Valid @RequestBody MunicipioCreateDTO requestDTO){
-        List<MunicipioResponseDTO> listaMunicipio = municipioService.cadastrarMunicipio(requestDTO);
+    public ResponseEntity<List<MunicipioModel>> cadastrarMunicipio(@Valid @RequestBody MunicipioCreateDTO requestDTO){
+        List<MunicipioModel> listaMunicipio = municipioService.cadastrarMunicipio(requestDTO);
         return ResponseEntity.ok(listaMunicipio);
     }
 
@@ -37,14 +38,14 @@ public class MunicipioController {
     }
 
     @PutMapping
-    public ResponseEntity<List<MunicipioResponseDTO>> atualizarMunicipio(@Valid @RequestBody MunicipioUpdateDTO municipioAtualizado){
-        List<MunicipioResponseDTO> listaMunicipio = municipioService.atualizarMunicipio(municipioAtualizado);
+    public ResponseEntity<List<MunicipioModel>> atualizarMunicipio(@Valid @RequestBody MunicipioUpdateDTO municipioAtualizado){
+        List<MunicipioModel> listaMunicipio = municipioService.atualizarMunicipio(municipioAtualizado);
         return ResponseEntity.ok(listaMunicipio);
     }
 
     @DeleteMapping("/{codigoMunicipio}")
-    public ResponseEntity<List<MunicipioResponseDTO>> deletarMunicipio(@PathVariable Long codigoMunicipio){
-        List<MunicipioResponseDTO> listaMunicipio = municipioService.deletarMunicipio(codigoMunicipio);
+    public ResponseEntity<List<MunicipioModel>> deletarMunicipio(@PathVariable Long codigoMunicipio){
+        List<MunicipioModel> listaMunicipio = municipioService.deletarMunicipio(codigoMunicipio);
         return ResponseEntity.ok(listaMunicipio);
     }
 }

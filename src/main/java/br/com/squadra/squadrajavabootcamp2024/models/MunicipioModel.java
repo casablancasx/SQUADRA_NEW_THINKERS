@@ -1,5 +1,8 @@
 package br.com.squadra.squadrajavabootcamp2024.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,9 +28,16 @@ public class MunicipioModel {
 
     @ManyToOne
     @JoinColumn(name = "codigoUF")
+    @JsonIgnore
     private UfModel uf;
 
     @OneToMany(mappedBy = "municipio", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<BairroModel> bairros;
 
+
+    @JsonProperty("codigoUF")
+    public Long getCodigoUF() {
+        return uf != null ? uf.getCodigoUF() : null;
+    }
 }
