@@ -25,14 +25,16 @@ public class BairroService {
 
     @Transactional
     public List<BairroResponseDTO> cadastrarBairro(BairroCreateDTO request) {
-        try {
-            bairroRepository.save(mapper.toEntity(request));
-            return bairroRepository.findAllByOrderByCodigoBairroDesc().stream()
-                    .map(mapper::toResponseDTO)
-                    .toList();
-        }catch (DataIntegrityViolationException e){
+
+        if (isNomeDuplicado(request.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir bairro no banco de dados. Já existe um bairro de nome " + request.getNome() + " cadastrado.");
         }
+
+        bairroRepository.save(mapper.toEntity(request));
+        return bairroRepository.findAllByOrderByCodigoBairroDesc().stream()
+                .map(mapper::toResponseDTO)
+                .toList();
+
     }
 
     public Object buscarBairroPorFiltro(Long codigoBairro, Long codigoMunicipio, String nome, Integer status) {
@@ -50,27 +52,34 @@ public class BairroService {
 
 
     public List<BairroResponseDTO> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
-        try {
 
-            BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
-                    .orElseThrow(() -> new IllegalArgumentException("Bairro não encontrado"));
 
-            mapper.atualizar(bairroAtualizado, bairroExistente);
-            bairroRepository.save(bairroExistente);
+        BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
+                .orElseThrow(() -> new IllegalArgumentException("Bairro não encontrado"));
 
-            return bairroRepository.findAllByOrderByCodigoBairroDesc().stream()
-                    .map(mapper::toResponseDTO)
-                    .toList();
-
-        }catch (DataIntegrityViolationException e){
+        if (bairroRepository.existsByNomeAndCodigoBairroNot(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro())) {
             throw new ResourceAlreadyExistException("Não foi possível atualizar bairro no banco de dados. Já existe um bairro de nome " + bairroAtualizado.getNome() + " cadastrado.");
         }
+
+
+        mapper.atualizar(bairroAtualizado, bairroExistente);
+        bairroRepository.save(bairroExistente);
+
+        return bairroRepository.findAllByOrderByCodigoBairroDesc().stream()
+                .map(mapper::toResponseDTO)
+                .toList();
+
+
     }
 
     private boolean retornoDeveriaSerLista(Long codigoBairro, Long codigoMunicipio, String nome, Integer status) {
-        return  codigoBairro == null &&
+        return codigoBairro == null &&
                 codigoMunicipio != null ||
                 nome != null ||
                 status != null;
+    }
+
+    private boolean isNomeDuplicado(String nome) {
+        return bairroRepository.existsByNome(nome);
     }
 }

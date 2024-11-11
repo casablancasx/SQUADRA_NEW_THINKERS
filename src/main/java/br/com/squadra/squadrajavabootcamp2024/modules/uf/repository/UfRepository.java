@@ -14,6 +14,8 @@ public interface UfRepository  extends JpaRepository<UfModel, Long> {
 
     boolean existsBySiglaOrNome(String sigla, String nome);
 
+    boolean existsBySiglaOrNomeAndCodigoUFNot(String sigla, String nome, Long codigoUF);
+
     List<UfModel> findAllByOrderByCodigoUFDesc();
 
     @Query(

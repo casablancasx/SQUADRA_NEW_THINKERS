@@ -26,4 +26,8 @@ public interface MunicipioRepository extends JpaRepository<MunicipioModel, Long>
             @Param("codigoUF") Long codigoUF,
             @Param("nome") String nome,
             @Param("status") Integer status);
+
+    boolean existsByNome(String nome);
+
+    boolean existsByNomeAndCodigoMunicipioNot(String nome, Long codigoMunicipio);
 }

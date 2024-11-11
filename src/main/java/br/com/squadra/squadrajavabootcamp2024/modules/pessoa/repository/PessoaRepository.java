@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface PessoaRepository extends JpaRepository<PessoaModel, Long> {
 
+    boolean existsByLogin(String login);
+
     List<PessoaModel> findAllByOrderByCodigoPessoaDesc();
 
 }

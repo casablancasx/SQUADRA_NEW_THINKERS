@@ -1,6 +1,9 @@
 package br.com.squadra.squadrajavabootcamp2024.modules.bairro.repository;
 
 import br.com.squadra.squadrajavabootcamp2024.modules.bairro.model.BairroModel;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +29,8 @@ public interface BairroRepository extends JpaRepository<BairroModel,Long> {
             @Param("codigoMunicipio") Long codigoMunicipio,
             @Param("nome") String nome,
             @Param("status") Integer status);
+
+    boolean existsByNome(String nome);
+
+    boolean existsByNomeAndCodigoBairroNot( String nome, Long codigoBairro);
 }

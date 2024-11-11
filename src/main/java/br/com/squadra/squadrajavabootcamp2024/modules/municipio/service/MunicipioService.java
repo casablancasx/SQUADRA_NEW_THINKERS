@@ -26,33 +26,35 @@ public class MunicipioService {
 
     @Transactional
     public List<MunicipioResponseDTO> cadastrarMunicipio(MunicipioCreateDTO request) {
-        try {
-            municipioRepository.save(mapper.toEntity(request));
-            return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
-                    .map(mapper::toReponseDTO)
-                    .toList();
-        }catch (DataIntegrityViolationException e){
+
+        if (isNomeDuplicado(request.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir município no banco de dados. Já existe um município de nome " + request.getNome() + " cadastrado.");
         }
+
+        municipioRepository.save(mapper.toEntity(request));
+        return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
+                .map(mapper::toReponseDTO)
+                .toList();
+
     }
 
 
     //TODO REFATORAR
     public Object buscarPorFiltro(Long codigoMunicipio, Long codigoUF, String nome, Integer status) {
 
-            List<MunicipioModel> municipios = municipioRepository.findByFiltro(codigoMunicipio, codigoUF, nome, status);
-            if (retornoNaoDeveriaSerUmaLista(codigoMunicipio, codigoUF, nome, status)){
-                return municipios.stream()
-                        .map(mapper::toReponseDTO)
-                        .findFirst()
-                        .orElseThrow(()-> new ResourceNotFoundException("Município não encontrado."));
-            }
-
+        List<MunicipioModel> municipios = municipioRepository.findByFiltro(codigoMunicipio, codigoUF, nome, status);
+        if (retornoNaoDeveriaSerUmaLista(codigoMunicipio, codigoUF, nome, status)) {
             return municipios.stream()
-                    .map(mapper::toReponseDTO).toList();
+                    .map(mapper::toReponseDTO)
+                    .findFirst()
+                    .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
+        }
+
+        return municipios.stream()
+                .map(mapper::toReponseDTO).toList();
     }
 
-    private boolean retornoNaoDeveriaSerUmaLista(Long codigoMunicipio, Long codigoUF, String nome, Integer status){
+    private boolean retornoNaoDeveriaSerUmaLista(Long codigoMunicipio, Long codigoUF, String nome, Integer status) {
         return codigoMunicipio != null &&
                 codigoUF == null &&
                 nome == null &&
@@ -60,18 +62,20 @@ public class MunicipioService {
     }
 
     public List<MunicipioResponseDTO> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
-        try {
-            MunicipioModel municipioExistente = municipioRepository.findById(municipioAtualizado.getCodigoMunicipio())
-                    .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
 
-            mapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
-            municipioRepository.save(municipioExistente);
-
-            return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
-                    .map(mapper::toReponseDTO).toList();
-        }catch (DataIntegrityViolationException e){
+        if (municipioRepository.existsByNomeAndCodigoMunicipioNot(municipioAtualizado.getNome(), municipioAtualizado.getCodigoMunicipio())) {
             throw new ResourceAlreadyExistException("Não foi possível atualizar município no banco de dados. Já existe um município de nome " + municipioAtualizado.getNome() + " cadastrado.");
         }
+
+        MunicipioModel municipioExistente = municipioRepository.findById(municipioAtualizado.getCodigoMunicipio())
+                .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
+
+        mapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
+        municipioRepository.save(municipioExistente);
+
+        return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
+                .map(mapper::toReponseDTO).toList();
+
     }
 
     public List<MunicipioResponseDTO> deletarMunicipio(Long codigoMunicipio) {
@@ -81,5 +85,9 @@ public class MunicipioService {
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc().stream()
                 .map(mapper::toReponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    private boolean isNomeDuplicado(String nome) {
+        return municipioRepository.existsByNome(nome);
     }
 }
