@@ -1,5 +1,6 @@
 package br.com.squadra.squadrajavabootcamp2024.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,5 +31,6 @@ public class UfModel {
     private Integer status;
 
     @OneToMany(mappedBy = "uf", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<MunicipioModel> municipios;
 }

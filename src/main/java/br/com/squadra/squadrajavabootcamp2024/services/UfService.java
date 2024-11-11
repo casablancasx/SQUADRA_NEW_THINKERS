@@ -5,7 +5,7 @@ import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundExcepti
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.UfCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.UfResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.UfUpdateDTO;
-import br.com.squadra.squadrajavabootcamp2024.mappers.mapper.UfMapper;
+import br.com.squadra.squadrajavabootcamp2024.mappers.UfMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.UfModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,7 @@ public class UfService {
     private final UfMapper mapper;
 
 
-    public List<UfResponseDTO> cadastrarUF(UfCreateDTO requestDTO) throws ResourceAlreadyExistException {
+    public List<UfModel> cadastrarUF(UfCreateDTO requestDTO) throws ResourceAlreadyExistException {
 
         if (ufrepository.existsBySiglaOrNome(requestDTO.getSigla(), requestDTO.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
@@ -32,20 +32,20 @@ public class UfService {
 
         UfModel model = mapper.toEntity(requestDTO);
         ufrepository.save(model);
-        List<UfModel> todosUfs = ufrepository.findAllByOrderByCodigoUFDesc();
-        return todosUfs.stream().map(mapper::toResponseDTO).toList();
+
+        return ufrepository.findAllByOrderByCodigoUFDesc();
     }
 
     public Object buscarPorFiltro(Long codigoUF, String sigla, String nome, Integer status) {
         List<UfModel> listaUfs = ufrepository.findByFiltro(codigoUF, sigla, nome, status);
         if (retornoDeveriaSerLista(codigoUF, sigla, nome, status, listaUfs)) {
-            return listaUfs.stream().map(mapper::toResponseDTO).toList();
+            return listaUfs;
         }
-        return listaUfs.isEmpty() ? Collections.emptyList() : mapper.toResponseDTO(listaUfs.get(0));
+        return listaUfs.isEmpty() ? Collections.emptyList() : listaUfs.get(0);
     }
 
 
-    public List<UfResponseDTO> atualizarUF(UfUpdateDTO ufAtualizada) {
+    public List<UfModel> atualizarUF(UfUpdateDTO ufAtualizada) {
 
 
         if (ufrepository.existsBySiglaOrNomeAndCodigoUFNot(ufAtualizada.getSigla(), ufAtualizada.getNome(), ufAtualizada.getCodigoUF())) {
@@ -55,17 +55,17 @@ public class UfService {
         UfModel ufExistente = ufrepository.findByCodigoUF(ufAtualizada.getCodigoUF()).orElseThrow(() -> new ResourceNotFoundException("O códigoUF(" + ufAtualizada.getCodigoUF() + ") não foi encontrado."));
         mapper.atualizarUF(ufAtualizada, ufExistente);
         ufrepository.save(ufExistente);
-        return ufrepository.findAllByOrderByCodigoUFDesc().stream().map(mapper::toResponseDTO).toList();
+        return ufrepository.findAllByOrderByCodigoUFDesc();
 
     }
 
-    public List<UfResponseDTO> deletarUF(Long codigoUF) {
+    public List<UfModel> deletarUF(Long codigoUF) {
         Optional<UfModel> optional = ufrepository.findByCodigoUF(codigoUF);
         if (optional.isEmpty()) {
             throw new ResourceNotFoundException("O códigoUF(" + codigoUF + ") não foi encontrado.");
         }
         ufrepository.delete(optional.get());
-        return ufrepository.findAllByOrderByCodigoUFDesc().stream().map(mapper::toResponseDTO).toList();
+        return ufrepository.findAllByOrderByCodigoUFDesc();
     }
 
 

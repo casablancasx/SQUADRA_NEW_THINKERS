@@ -1,4 +1,4 @@
-package br.com.squadra.squadrajavabootcamp2024.mappers.mapper;
+package br.com.squadra.squadrajavabootcamp2024.mappers;
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.UfCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.UfResponseDTO;
@@ -13,8 +13,6 @@ public interface UfMapper {
     @Mapping(target = "codigoUF", ignore = true)
     @Mapping(target = "municipios", ignore = true)
     UfModel toEntity(UfCreateDTO requestDTO);
-
-    UfResponseDTO toResponseDTO(UfModel model);
 
     @Mapping(target = "municipios", ignore = true)
     void atualizarUF(UfUpdateDTO ufAtualizada, @MappingTarget UfModel ufExistente);
