@@ -23,17 +23,14 @@ public class BairroService {
     private final BairroMapper mapper;
 
     @Transactional
-    public List<BairroResponseDTO> cadastrarBairro(BairroCreateDTO request) {
+    public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
 
         if (isNomeDuplicado(request.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir bairro no banco de dados. Já existe um bairro de nome " + request.getNome() + " cadastrado.");
         }
 
         bairroRepository.save(mapper.toEntity(request));
-        return bairroRepository.findAllByOrderByCodigoBairroDesc().stream()
-                .map(mapper::toResponseDTO)
-                .toList();
-
+        return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
 
     public Object buscarBairroPorFiltro(Long codigoBairro, Long codigoMunicipio, String nome, Integer status) {
@@ -41,16 +38,14 @@ public class BairroService {
         List<BairroModel> listaBairros = bairroRepository.findByFiltro(codigoBairro, codigoMunicipio, nome, status);
 
         if (retornoDeveriaSerLista(codigoBairro, codigoMunicipio, nome, status)) {
-            return listaBairros.stream()
-                    .map(mapper::toResponseDTO)
-                    .toList();
+            return listaBairros;
         }
 
-        return listaBairros.isEmpty() ? List.of() : mapper.toResponseDTO(listaBairros.get(0));
+        return listaBairros.isEmpty() ? List.of() : listaBairros.get(0);
     }
 
 
-    public List<BairroResponseDTO> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
+    public List<BairroModel> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
 
 
         BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
@@ -63,11 +58,7 @@ public class BairroService {
         mapper.atualizar(bairroAtualizado, bairroExistente);
         bairroRepository.save(bairroExistente);
 
-        return bairroRepository.findAllByOrderByCodigoBairroDesc().stream()
-                .map(mapper::toResponseDTO)
-                .toList();
-
-
+        return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
 
     private boolean retornoDeveriaSerLista(Long codigoBairro, Long codigoMunicipio, String nome, Integer status) {

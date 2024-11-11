@@ -4,6 +4,7 @@ package br.com.squadra.squadrajavabootcamp2024.controllers;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.BairroCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.BairroResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
 import br.com.squadra.squadrajavabootcamp2024.services.BairroService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,8 @@ public class BairroController {
     private final BairroService bairroService;
 
     @PostMapping
-    public ResponseEntity<List<BairroResponseDTO>> cadastrarBairro(@Valid @RequestBody BairroCreateDTO request) {
-        List<BairroResponseDTO> listaBairros = bairroService.cadastrarBairro(request);
+    public ResponseEntity<List<BairroModel>> cadastrarBairro(@Valid @RequestBody BairroCreateDTO request) {
+        List<BairroModel> listaBairros = bairroService.cadastrarBairro(request);
         return ResponseEntity.ok(listaBairros);
     }
 
@@ -39,8 +40,8 @@ public class BairroController {
     }
 
     @PutMapping
-    public ResponseEntity<List<BairroResponseDTO>> atualizarBairro(@Valid @RequestBody BairroUpdateDTO bairroAtualizado) {
-        List<BairroResponseDTO> listaBairros = bairroService.atualizarBairro(bairroAtualizado);
+    public ResponseEntity<List<BairroModel>> atualizarBairro(@Valid @RequestBody BairroUpdateDTO bairroAtualizado) {
+        List<BairroModel> listaBairros = bairroService.atualizarBairro(bairroAtualizado);
         return ResponseEntity.ok(listaBairros);
     }
 

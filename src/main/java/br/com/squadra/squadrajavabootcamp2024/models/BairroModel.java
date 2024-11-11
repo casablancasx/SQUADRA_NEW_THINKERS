@@ -1,5 +1,7 @@
 package br.com.squadra.squadrajavabootcamp2024.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,8 +26,16 @@ public class BairroModel {
 
     @ManyToOne
     @JoinColumn(name = "codigoMunicipio")
+    @JsonIgnore
     private MunicipioModel municipio;
 
     @OneToMany(mappedBy = "bairro", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<EnderecoModel> enderecos;
+
+
+    @JsonProperty("codigoMunicipio")
+    public Long getCodigoMunicipio() {
+        return municipio != null ? municipio.getCodigoMunicipio() : null;
+    }
 }
