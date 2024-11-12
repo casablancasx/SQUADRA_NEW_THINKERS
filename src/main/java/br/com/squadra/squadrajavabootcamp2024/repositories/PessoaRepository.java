@@ -13,6 +13,8 @@ public interface PessoaRepository extends JpaRepository<PessoaModel, Long> {
 
     boolean existsByLogin(String login);
 
+    boolean existsByLoginAndAndCodigoPessoaNot(String login, Long codigoPessoa);
+
 
     @Query(
             "SELECT pessoa FROM PessoaModel pessoa WHERE (:codigoPessoa IS NULL OR pessoa.codigoPessoa = :codigoPessoa)" +

@@ -2,6 +2,7 @@ package br.com.squadra.squadrajavabootcamp2024.controllers;
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.PessoaResponseDTO;
+import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
 import br.com.squadra.squadrajavabootcamp2024.services.PessoaService;
 import jakarta.validation.Valid;
@@ -29,6 +30,11 @@ public class PessoaController {
                                                         @RequestParam(required = false) String login,
                                                         @RequestParam(required = false) Integer status){
         return ResponseEntity.ok(pessoaService.buscarPessoaPorFiltro(codigoPessoa,login,status));
+    }
+
+    @PutMapping
+    public ResponseEntity<List<PessoaModel>> atualizarPessoa(@Valid @RequestBody PessoaUpdateDTO pessoaAtualizada){
+        return ResponseEntity.ok(pessoaService.atualizarPessoa(pessoaAtualizada));
     }
 
 
