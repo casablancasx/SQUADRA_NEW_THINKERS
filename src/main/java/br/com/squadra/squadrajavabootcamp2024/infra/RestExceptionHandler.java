@@ -1,6 +1,6 @@
 package br.com.squadra.squadrajavabootcamp2024.infra;
 
-import br.com.squadra.squadrajavabootcamp2024.exceptions.InvalidArgumentTypeException;
+
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
