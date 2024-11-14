@@ -20,5 +20,5 @@ public interface BairroMapper {
 
     @Mapping(source = "codigoMunicipio", target = "municipio.codigoMunicipio")
     @Mapping(target = "enderecos", ignore = true)
-    void atualizar(BairroUpdateDTO bairroAtualizado, @MappingTarget BairroModel bairroExistente);
+    void atualizarBairro(BairroUpdateDTO bairroAtualizado, @MappingTarget BairroModel bairroExistente);
 }

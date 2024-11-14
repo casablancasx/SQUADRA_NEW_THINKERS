@@ -5,9 +5,11 @@ import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistExc
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.BairroCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.BairroResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.BairroMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
+import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,13 @@ public class BairroService {
 
     private final BairroRepository bairroRepository;
 
+    private final MunicipioRepository municipioRepository;
+
     private final BairroMapper mapper;
 
-    @Transactional
     public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
 
-        if (isNomeDuplicado(request.getNome())) {
+        if (bairroRepository.existsByNome(request.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir bairro no banco de dados. Já existe um bairro de nome " + request.getNome() + " cadastrado.");
         }
 
@@ -34,41 +37,32 @@ public class BairroService {
     }
 
     public Object buscarBairroPorFiltro(Long codigoBairro, Long codigoMunicipio, String nome, Integer status) {
-
         List<BairroModel> listaBairros = bairroRepository.findByFiltro(codigoBairro, codigoMunicipio, nome, status);
 
-        if (retornoDeveriaSerLista(codigoBairro, codigoMunicipio, nome, status)) {
-            return listaBairros;
+        if (codigoBairro != null) {
+            return listaBairros.isEmpty() ? List.of() : listaBairros.get(0);
         }
 
-        return listaBairros.isEmpty() ? List.of() : listaBairros.get(0);
+        return listaBairros;
     }
 
 
     public List<BairroModel> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
 
-
-        BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
-                .orElseThrow(() -> new IllegalArgumentException("Bairro não encontrado"));
+        if (!municipioRepository.existsByCodigoMunicipio(bairroAtualizado.getCodigoMunicipio())) {
+            throw new ResourceNotFoundException("Não foi encontrado município com o código " + bairroAtualizado.getCodigoMunicipio() + ".");
+        }
 
         if (bairroRepository.existsByNomeAndCodigoBairroNot(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro())) {
             throw new ResourceAlreadyExistException("Não foi possível atualizar bairro no banco de dados. Já existe um bairro de nome " + bairroAtualizado.getNome() + " cadastrado.");
         }
 
-        mapper.atualizar(bairroAtualizado, bairroExistente);
+        BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
+                .orElseThrow(() -> new IllegalArgumentException("Bairro não encontrado"));
+
+        mapper.atualizarBairro(bairroAtualizado, bairroExistente);
         bairroRepository.save(bairroExistente);
 
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
-    }
-
-    private boolean retornoDeveriaSerLista(Long codigoBairro, Long codigoMunicipio, String nome, Integer status) {
-        return codigoBairro == null &&
-                codigoMunicipio != null ||
-                nome != null ||
-                status != null;
-    }
-
-    private boolean isNomeDuplicado(String nome) {
-        return bairroRepository.existsByNome(nome);
     }
 }
