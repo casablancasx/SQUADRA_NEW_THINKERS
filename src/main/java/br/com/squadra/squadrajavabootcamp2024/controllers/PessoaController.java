@@ -35,5 +35,10 @@ public class PessoaController {
         return ResponseEntity.ok(pessoaService.atualizarPessoa(pessoaAtualizada));
     }
 
+    @DeleteMapping("/{codigoPessoa}")
+    public ResponseEntity<List<PessoaModel>> deletarPessoa(@PathVariable Long codigoPessoa) {
+        return ResponseEntity.ok(pessoaService.deletarPessoa(codigoPessoa));
+    }
+
 
 }

@@ -92,4 +92,10 @@ public class PessoaService {
     }
 
 
+    public List<PessoaModel> deletarPessoa(Long codigoPessoa) {
+        PessoaModel pessoa = pessoaRepository.findById(codigoPessoa)
+                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
+        pessoaRepository.delete(pessoa);
+        return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
+    }
 }

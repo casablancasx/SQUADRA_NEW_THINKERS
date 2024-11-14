@@ -61,4 +61,11 @@ public class BairroService {
 
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
+
+    public List<BairroModel> deletarBairro(Long codigoBairro) {
+        BairroModel bairro = bairroRepository.findById(codigoBairro)
+                .orElseThrow(() -> new ResourceNotFoundException("Bairro não encontrado."));
+        bairroRepository.delete(bairro);
+        return bairroRepository.findAllByOrderByCodigoBairroDesc();
+    }
 }

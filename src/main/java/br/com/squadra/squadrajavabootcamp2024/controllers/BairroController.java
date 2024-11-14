@@ -43,5 +43,11 @@ public class BairroController {
         return ResponseEntity.ok(listaBairros);
     }
 
+    @DeleteMapping("/{codigoBairro}")
+    public ResponseEntity<List<BairroModel>> deletarBairro(@PathVariable Long codigoBairro) {
+        List<BairroModel> listaBairros = bairroService.deletarBairro(codigoBairro);
+        return ResponseEntity.ok(listaBairros);
+    }
+
 
 }
