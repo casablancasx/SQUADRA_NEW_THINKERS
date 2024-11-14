@@ -46,8 +46,8 @@ public class PessoaService {
 
         List<PessoaModel> pessoaModelList = pessoaRepository.findByFiltro(codigoPessoa, login, status);
 
-        if (retornoNaoDeveSerUmaLista(codigoPessoa, login, status)) {
-            return pessoaModelList.stream().findFirst().map(pessoaMapper::toResponseDTO).orElse(null);
+        if (codigoPessoa != null) {
+            return pessoaModelList.isEmpty() ? List.of() : pessoaMapper.toResponseDTO(pessoaModelList.get(0));
         }
 
         return pessoaModelList;
@@ -83,8 +83,5 @@ public class PessoaService {
         enderecoRepository.deleteAll(enderecosParaRemover);
     }
 
-    private boolean retornoNaoDeveSerUmaLista(Long codigoPessoa, String login, Integer status) {
-        return codigoPessoa != null && login == null && status == null;
-    }
 
 }
