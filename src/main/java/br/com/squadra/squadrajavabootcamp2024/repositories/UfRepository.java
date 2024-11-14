@@ -12,9 +12,16 @@ import java.util.Optional;
 @Repository
 public interface UfRepository  extends JpaRepository<UfModel, Long> {
 
-    boolean existsBySiglaOrNome(String sigla, String nome);
 
-    boolean existsBySiglaOrNomeAndCodigoUFNot(String sigla, String nome, Long codigoUF);
+
+    boolean existsBySiglaAndCodigoUFNot(String sigla, Long codigoUF);
+
+    boolean existsByNomeAndCodigoUFNot(String nome, Long codigoUF);
+
+    boolean existsByNome(String nome);
+
+    boolean existsBySigla(String sigla);
+
 
     List<UfModel> findAllByOrderByCodigoUFDesc();
 
@@ -33,4 +40,6 @@ public interface UfRepository  extends JpaRepository<UfModel, Long> {
     );
 
     Optional<UfModel> findByCodigoUF(Long codigoUF);
+
+    boolean existsBySiglaOrNome(String sigla, String nome);
 }

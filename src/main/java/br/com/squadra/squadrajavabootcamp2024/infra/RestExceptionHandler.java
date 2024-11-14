@@ -46,8 +46,8 @@ public class RestExceptionHandler {
     public ResponseEntity<StandardError> invalidArgumentTypeException(MethodArgumentTypeMismatchException exception){
         StandardError error = StandardError.builder()
                 .mensagem("O Tipo de dado informado é invalido para o campo " + exception.getName() +
-                        "era esperado um valor do tipo " + exception.getRequiredType().getSimpleName() +
-                        " e foi informado " + exception.getValue())
+                        " era esperado um valor do tipo " + exception.getRequiredType().getSimpleName() +
+                        " e foi informado " + exception.getValue() + " de tipo " + exception.getValue().getClass().getSimpleName())
                 .status(422)
                 .build();
         return ResponseEntity.status(error.getStatus()).body(error);

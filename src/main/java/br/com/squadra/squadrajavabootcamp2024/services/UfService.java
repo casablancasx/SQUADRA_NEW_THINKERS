@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +27,12 @@ public class UfService {
 
     public List<UfModel> cadastrarUF(UfCreateDTO requestDTO) throws ResourceAlreadyExistException {
 
-        if (ufrepository.existsBySiglaOrNome(requestDTO.getSigla(), requestDTO.getNome())) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
+        if (ufrepository.existsByNome(requestDTO.getNome())) {
+            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de nome " + requestDTO.getNome() + " cadastrada.");
+        }
+
+        if (ufrepository.existsBySigla(requestDTO.getSigla())) {
+            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de sigla " + requestDTO.getSigla() + " cadastrada.");
         }
 
         UfModel model = mapper.toEntity(requestDTO);
@@ -38,18 +43,23 @@ public class UfService {
 
     public Object buscarPorFiltro(Long codigoUF, String sigla, String nome, Integer status) {
         List<UfModel> listaUfs = ufrepository.findByFiltro(codigoUF, sigla, nome, status);
-        if (retornoDeveriaSerLista(codigoUF, sigla, nome, status, listaUfs)) {
-            return listaUfs;
+
+        if (retornoDeveriaSerUmUnicoObjeto(codigoUF, sigla, nome)) {
+            return listaUfs.isEmpty() ? List.of() : listaUfs.get(0);
         }
-        return listaUfs.isEmpty() ? Collections.emptyList() : listaUfs.get(0);
+
+        return listaUfs;
     }
 
 
     public List<UfModel> atualizarUF(UfUpdateDTO ufAtualizada) {
 
+        if (ufrepository.existsByNomeAndCodigoUFNot(ufAtualizada.getNome(), ufAtualizada.getCodigoUF())) {
+            throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF de nome " + ufAtualizada.getNome() + " cadastrada.");
+        }
 
-        if (ufrepository.existsBySiglaOrNomeAndCodigoUFNot(ufAtualizada.getSigla(), ufAtualizada.getNome(), ufAtualizada.getCodigoUF())) {
-            throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF com a sigla ou nome informado.");
+        if (ufrepository.existsBySiglaAndCodigoUFNot(ufAtualizada.getSigla(), ufAtualizada.getCodigoUF())) {
+            throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF de sigla " + ufAtualizada.getSigla() + " cadastrada.");
         }
 
         UfModel ufExistente = ufrepository.findByCodigoUF(ufAtualizada.getCodigoUF()).orElseThrow(() -> new ResourceNotFoundException("O códigoUF(" + ufAtualizada.getCodigoUF() + ") não foi encontrado."));
@@ -69,14 +79,7 @@ public class UfService {
     }
 
 
-    private boolean retornoDeveriaSerLista(Long codigoUF, String sigla, String nome, Integer status, List<UfModel> listaUfs) {
-        return somenteStatusNaoEhNulo(codigoUF, sigla, nome, status) || listaUfs.size() > 1;
-    }
-
-    private boolean somenteStatusNaoEhNulo(Long codigoUF, String sigla, String nome, Integer status) {
-        return codigoUF == null &&
-                sigla == null &&
-                nome == null &&
-                status != null;
+    private boolean retornoDeveriaSerUmUnicoObjeto(Long codigoUF, String sigla, String nome){
+        return codigoUF != null || sigla != null || nome != null;
     }
 }
