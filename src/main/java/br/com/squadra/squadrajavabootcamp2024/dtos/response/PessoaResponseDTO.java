@@ -1,6 +1,5 @@
 package br.com.squadra.squadrajavabootcamp2024.dtos.response;
 
-import br.com.squadra.squadrajavabootcamp2024.models.EnderecoModel;
 import lombok.*;
 
 import java.util.List;

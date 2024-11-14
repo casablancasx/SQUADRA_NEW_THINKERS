@@ -4,7 +4,10 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.create.MunicipioCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.MunicipioResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {UfMapper.class})
 public interface MunicipioMapper {

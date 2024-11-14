@@ -1,18 +1,15 @@
 package br.com.squadra.squadrajavabootcamp2024.services;
 
+import br.com.squadra.squadrajavabootcamp2024.dtos.create.UfCreateDTO;
+import br.com.squadra.squadrajavabootcamp2024.dtos.update.UfUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
-import br.com.squadra.squadrajavabootcamp2024.dtos.create.UfCreateDTO;
-import br.com.squadra.squadrajavabootcamp2024.dtos.response.UfResponseDTO;
-import br.com.squadra.squadrajavabootcamp2024.dtos.update.UfUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.mappers.UfMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.UfModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +18,6 @@ import java.util.Optional;
 public class UfService {
 
     private final UfRepository ufrepository;
-
     private final UfMapper mapper;
 
 
@@ -79,7 +75,7 @@ public class UfService {
     }
 
 
-    private boolean retornoDeveriaSerUmUnicoObjeto(Long codigoUF, String sigla, String nome){
+    private boolean retornoDeveriaSerUmUnicoObjeto(Long codigoUF, String sigla, String nome) {
         return codigoUF != null || sigla != null || nome != null;
     }
 }

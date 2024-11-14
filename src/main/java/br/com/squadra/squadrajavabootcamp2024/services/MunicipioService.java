@@ -1,14 +1,13 @@
 package br.com.squadra.squadrajavabootcamp2024.services;
 
-import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
-import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.MunicipioCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
+import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.MunicipioMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
-
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +19,7 @@ import java.util.List;
 public class MunicipioService {
 
     private final MunicipioRepository municipioRepository;
-
     private final UfRepository ufRepository;
-
     private final MunicipioMapper mapper;
 
 
@@ -46,7 +43,7 @@ public class MunicipioService {
 
         List<MunicipioModel> municipios = municipioRepository.findByFiltro(codigoMunicipio, codigoUF, nome, status);
 
-        if (codigoMunicipio != null){
+        if (codigoMunicipio != null) {
             return municipios.isEmpty() ? List.of() : municipios.get(0);
         }
 

@@ -4,7 +4,10 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.create.UfCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.UfResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.UfUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.UfModel;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UfMapper {

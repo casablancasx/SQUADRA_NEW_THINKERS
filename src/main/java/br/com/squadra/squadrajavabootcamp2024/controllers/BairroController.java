@@ -2,7 +2,6 @@ package br.com.squadra.squadrajavabootcamp2024.controllers;
 
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.BairroCreateDTO;
-import br.com.squadra.squadrajavabootcamp2024.dtos.response.BairroResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
 import br.com.squadra.squadrajavabootcamp2024.services.BairroService;
@@ -33,8 +32,7 @@ public class BairroController {
             @RequestParam(required = false) Long codigoMunicipio,
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) Integer status
-    )
-    {
+    ) {
         Object response = bairroService.buscarBairroPorFiltro(codigoBairro, codigoMunicipio, nome, status);
         return ResponseEntity.ok(response);
     }
@@ -44,7 +42,6 @@ public class BairroController {
         List<BairroModel> listaBairros = bairroService.atualizarBairro(bairroAtualizado);
         return ResponseEntity.ok(listaBairros);
     }
-
 
 
 }

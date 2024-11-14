@@ -9,10 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BairroRepository extends JpaRepository<BairroModel,Long> {
+public interface BairroRepository extends JpaRepository<BairroModel, Long> {
 
     List<BairroModel> findAllByOrderByCodigoBairroDesc();
-
 
     @Query(
             "SELECT b FROM BairroModel b WHERE (:codigoBairro IS NULL OR b.codigoBairro = :codigoBairro)" +
@@ -29,5 +28,5 @@ public interface BairroRepository extends JpaRepository<BairroModel,Long> {
 
     boolean existsByNome(String nome);
 
-    boolean existsByNomeAndCodigoBairroNot( String nome, Long codigoBairro);
+    boolean existsByNomeAndCodigoBairroNot(String nome, Long codigoBairro);
 }

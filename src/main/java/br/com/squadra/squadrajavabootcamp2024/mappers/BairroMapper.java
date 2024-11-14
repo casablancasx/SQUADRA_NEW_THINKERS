@@ -7,7 +7,7 @@ import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
 import org.mapstruct.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.ERROR,uses = {MunicipioMapper.class})
+        unmappedTargetPolicy = ReportingPolicy.ERROR, uses = {MunicipioMapper.class})
 public interface BairroMapper {
 
     @Mapping(target = "codigoBairro", ignore = true)

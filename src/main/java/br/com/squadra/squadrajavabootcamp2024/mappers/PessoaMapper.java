@@ -5,11 +5,14 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.PessoaResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-         uses = {EnderecoMapper.class})
+        uses = {EnderecoMapper.class})
 public interface PessoaMapper {
 
     @Mapping(target = "codigoPessoa", ignore = true)

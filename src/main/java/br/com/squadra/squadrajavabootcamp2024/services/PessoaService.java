@@ -1,10 +1,9 @@
 package br.com.squadra.squadrajavabootcamp2024.services;
 
+import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.EnderecoUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
-import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
-import br.com.squadra.squadrajavabootcamp2024.dtos.response.PessoaResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.EnderecoMapper;
 import br.com.squadra.squadrajavabootcamp2024.mappers.PessoaMapper;
@@ -23,9 +22,7 @@ import java.util.List;
 public class PessoaService {
 
     private final PessoaRepository pessoaRepository;
-
     private final PessoaMapper pessoaMapper;
-
     private final EnderecoMapper enderecoMapper;
     private final EnderecoRepository enderecoRepository;
 
@@ -58,7 +55,6 @@ public class PessoaService {
         PessoaModel pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
-
         validarEnderecos(pessoaAtualizada.getEnderecos());
         List<EnderecoModel> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
         removeEnderecosCasoNaoExistaNaListaDeAtualizados(listaDeEnderecosAtualizada, pessoaExistente);
@@ -90,7 +86,7 @@ public class PessoaService {
     private void validarEnderecos(List<EnderecoUpdateDTO> enderecosAtualizados) {
         for (EnderecoUpdateDTO endereco : enderecosAtualizados) {
             if (endereco.getCodigoEndereco() != null) {
-                enderecoRepository.findById(endereco.getCodigoEndereco()).orElseThrow(() -> new ResourceNotFoundException("id nao encontrado"));
+                enderecoRepository.findById(endereco.getCodigoEndereco()).orElseThrow(() -> new ResourceNotFoundException("o endereço com código " + endereco.getCodigoEndereco() + " não foi encontrado."));
             }
         }
     }

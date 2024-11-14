@@ -1,16 +1,14 @@
 package br.com.squadra.squadrajavabootcamp2024.services;
 
 
-import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.BairroCreateDTO;
-import br.com.squadra.squadrajavabootcamp2024.dtos.response.BairroResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.BairroMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +19,7 @@ import java.util.List;
 public class BairroService {
 
     private final BairroRepository bairroRepository;
-
     private final MunicipioRepository municipioRepository;
-
     private final BairroMapper mapper;
 
     public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {

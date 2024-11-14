@@ -9,14 +9,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-
 import java.util.Objects;
 
 @ControllerAdvice
 public class RestExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<StandardError> resourceNotFoundException(ResourceNotFoundException exception){
+    public ResponseEntity<StandardError> resourceNotFoundException(ResourceNotFoundException exception) {
         StandardError error = StandardError.builder()
                 .mensagem(exception.getMessage())
                 .status(404)
@@ -25,7 +24,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(ResourceAlreadyExistException.class)
-    public ResponseEntity<StandardError> resourceAlreadyException(ResourceAlreadyExistException exception){
+    public ResponseEntity<StandardError> resourceAlreadyException(ResourceAlreadyExistException exception) {
         StandardError error = StandardError.builder()
                 .mensagem(exception.getMessage())
                 .status(409)
@@ -43,7 +42,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<StandardError> invalidArgumentTypeException(MethodArgumentTypeMismatchException exception){
+    public ResponseEntity<StandardError> invalidArgumentTypeException(MethodArgumentTypeMismatchException exception) {
         StandardError error = StandardError.builder()
                 .mensagem("O Tipo de dado informado é invalido para o campo " + exception.getName() +
                         " era esperado um valor do tipo " + exception.getRequiredType().getSimpleName() +
