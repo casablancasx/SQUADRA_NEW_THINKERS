@@ -3,17 +3,17 @@ package br.com.squadra.squadrajavabootcamp2024.services;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.MunicipioCreateDTO;
-import br.com.squadra.squadrajavabootcamp2024.dtos.response.MunicipioResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.mappers.MunicipioMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
-import jakarta.transaction.Transactional;
+import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -21,12 +21,18 @@ public class MunicipioService {
 
     private final MunicipioRepository municipioRepository;
 
+    private final UfRepository ufRepository;
+
     private final MunicipioMapper mapper;
 
 
     public List<MunicipioModel> cadastrarMunicipio(MunicipioCreateDTO request) {
 
-        if (isNomeDuplicado(request.getNome())) {
+        if (!ufRepository.existsByCodigoUF(request.getCodigoUF())) {
+            throw new ResourceNotFoundException("Não foi encontrado UF com o código " + request.getCodigoUF() + ".");
+        }
+
+        if (municipioRepository.existsByNome(request.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir município no banco de dados. Já existe um município de nome " + request.getNome() + " cadastrado.");
         }
 
@@ -35,14 +41,13 @@ public class MunicipioService {
 
     }
 
-    //TODO REFATORAR
+
     public Object buscarPorFiltro(Long codigoMunicipio, Long codigoUF, String nome, Integer status) {
 
         List<MunicipioModel> municipios = municipioRepository.findByFiltro(codigoMunicipio, codigoUF, nome, status);
-        if (retornoNaoDeveriaSerUmaLista(codigoMunicipio, codigoUF, nome, status)) {
-            return municipios.stream()
-                    .findFirst()
-                    .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
+
+        if (codigoMunicipio != null){
+            return municipios.isEmpty() ? List.of() : municipios.get(0);
         }
 
         return municipios;
@@ -71,14 +76,5 @@ public class MunicipioService {
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
     }
 
-    private boolean isNomeDuplicado(String nome) {
-        return municipioRepository.existsByNome(nome);
-    }
 
-    private boolean retornoNaoDeveriaSerUmaLista(Long codigoMunicipio, Long codigoUF, String nome, Integer status) {
-        return codigoMunicipio != null &&
-                codigoUF == null &&
-                nome == null &&
-                status == null;
-    }
 }

@@ -30,4 +30,6 @@ public interface MunicipioRepository extends JpaRepository<MunicipioModel, Long>
     boolean existsByNome(String nome);
 
     boolean existsByNomeAndCodigoMunicipioNot(String nome, Long codigoMunicipio);
+
+
 }
