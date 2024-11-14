@@ -1,5 +1,6 @@
 package br.com.squadra.squadrajavabootcamp2024.services;
 
+import br.com.squadra.squadrajavabootcamp2024.dtos.update.EnderecoUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
@@ -57,9 +58,12 @@ public class PessoaService {
         PessoaModel pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
+
+        validarEnderecos(pessoaAtualizada.getEnderecos());
         List<EnderecoModel> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
         removeEnderecosCasoNaoExistaNaListaDeAtualizados(listaDeEnderecosAtualizada, pessoaExistente);
         pessoaMapper.atualizar(pessoaAtualizada, pessoaExistente);
+
 
         if (pessoaRepository.existsByLoginAndAndCodigoPessoaNot(pessoaExistente.getLogin(), pessoaExistente.getCodigoPessoa())) {
             throw new ResourceAlreadyExistException("Não foi possível atualizar pessoa no banco de dados. Já existe uma pessoa de login " + pessoaExistente.getLogin() + " cadastrado.");
@@ -81,6 +85,14 @@ public class PessoaService {
 
         pessoaExistente.getEnderecos().removeAll(enderecosParaRemover);
         enderecoRepository.deleteAll(enderecosParaRemover);
+    }
+
+    private void validarEnderecos(List<EnderecoUpdateDTO> enderecosAtualizados) {
+        for (EnderecoUpdateDTO endereco : enderecosAtualizados) {
+            if (endereco.getCodigoEndereco() != null) {
+                enderecoRepository.findById(endereco.getCodigoEndereco()).orElseThrow(() -> new ResourceNotFoundException("id nao encontrado"));
+            }
+        }
     }
 
 
