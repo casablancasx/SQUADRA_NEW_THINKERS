@@ -58,20 +58,33 @@ public class PessoaService {
     }
 
     public List<PessoaModel> atualizarPessoa(PessoaUpdateDTO pessoaAtualizada) {
+
         PessoaModel pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
         validarSeEnderecosEstaoCadastradosNoBanco(pessoaAtualizada.getEnderecos());
-        List<EnderecoModel> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
-        removeEnderecosCasoNaoExistaNaListaDeAtualizados(listaDeEnderecosAtualizada, pessoaExistente);
-        pessoaMapper.atualizar(pessoaAtualizada, pessoaExistente);
 
+        List<EnderecoModel> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
+
+        removeEnderecosCasoNaoExistaNaListaDeAtualizados(listaDeEnderecosAtualizada, pessoaExistente);
+
+        pessoaMapper.atualizar(pessoaAtualizada, pessoaExistente);
 
         if (pessoaRepository.existsByLoginAndAndCodigoPessoaNot(pessoaExistente.getLogin(), pessoaExistente.getCodigoPessoa())) {
             throw new ResourceAlreadyExistException("Não foi possível atualizar pessoa no banco de dados. Já existe uma pessoa de login " + pessoaExistente.getLogin() + " cadastrado.");
         }
 
         pessoaRepository.save(pessoaExistente);
+        return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
+    }
+
+    public List<PessoaModel> deletarPessoa(Long codigoPessoa) {
+
+        PessoaModel pessoa = pessoaRepository.findById(codigoPessoa)
+                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
+
+        pessoaRepository.delete(pessoa);
+
         return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
 
@@ -103,13 +116,5 @@ public class PessoaService {
                 throw new ResourceNotFoundException("Não foi possível incluir pessoa no banco de dados. Não existe um bairro com código " + endereco.getCodigoBairro() + " cadastrado.");
             }
         }
-    }
-
-
-    public List<PessoaModel> deletarPessoa(Long codigoPessoa) {
-        PessoaModel pessoa = pessoaRepository.findById(codigoPessoa)
-                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
-        pessoaRepository.delete(pessoa);
-        return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
 }
