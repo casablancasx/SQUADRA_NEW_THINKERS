@@ -18,10 +18,11 @@ import java.util.Optional;
 public class UfService {
 
     private final UfRepository ufrepository;
+
     private final UfMapper mapper;
 
 
-    public List<UfModel> cadastrarUF(UfCreateDTO requestDTO) throws ResourceAlreadyExistException {
+    public List<UfModel> cadastrarUF(UfCreateDTO requestDTO){
 
         if (ufrepository.existsByNome(requestDTO.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de nome " + requestDTO.getNome() + " cadastrada.");

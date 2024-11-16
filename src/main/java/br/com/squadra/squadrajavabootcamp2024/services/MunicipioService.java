@@ -20,18 +20,19 @@ public class MunicipioService {
 
     private final MunicipioRepository municipioRepository;
     private final UfRepository ufRepository;
-    private final MunicipioMapper mapper;
+
+    private final MunicipioMapper municipioMapper;
 
 
     public List<MunicipioModel> cadastrarMunicipio(MunicipioCreateDTO request) {
 
-        validarSeUfEstaCadastradoNoBancoDeDados(request.getCodigoUF());
+        verificarSeUfExisteNoBanco(request.getCodigoUF());
 
         if (municipioRepository.existsByNome(request.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir município no banco de dados. Já existe um município de nome " + request.getNome() + " cadastrado.");
         }
 
-        municipioRepository.save(mapper.toEntity(request));
+        municipioRepository.save(municipioMapper.toEntity(request));
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
 
     }
@@ -50,7 +51,7 @@ public class MunicipioService {
 
     public List<MunicipioModel> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
 
-        validarSeUfEstaCadastradoNoBancoDeDados(municipioAtualizado.getCodigoUF());
+        verificarSeUfExisteNoBanco(municipioAtualizado.getCodigoUF());
 
         if (municipioRepository.existsByNomeAndCodigoMunicipioNot(municipioAtualizado.getNome(), municipioAtualizado.getCodigoMunicipio())) {
             throw new ResourceAlreadyExistException("Não foi possível atualizar município no banco de dados. Já existe um município de nome " + municipioAtualizado.getNome() + " cadastrado.");
@@ -59,7 +60,7 @@ public class MunicipioService {
         MunicipioModel municipioExistente = municipioRepository.findById(municipioAtualizado.getCodigoMunicipio())
                 .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
 
-        mapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
+        municipioMapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
         municipioRepository.save(municipioExistente);
 
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
@@ -73,7 +74,7 @@ public class MunicipioService {
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
     }
 
-    private void validarSeUfEstaCadastradoNoBancoDeDados(Long codigoUF) {
+    private void verificarSeUfExisteNoBanco(Long codigoUF) {
         if (!ufRepository.existsByCodigoUF(codigoUF)) {
             throw new ResourceNotFoundException("Não foi encontrado UF com o código " + codigoUF + ".");
         }
