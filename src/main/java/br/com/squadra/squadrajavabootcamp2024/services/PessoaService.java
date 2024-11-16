@@ -1,5 +1,6 @@
 package br.com.squadra.squadrajavabootcamp2024.services;
 
+import br.com.squadra.squadrajavabootcamp2024.dtos.create.EnderecoCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.EnderecoUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
@@ -9,6 +10,7 @@ import br.com.squadra.squadrajavabootcamp2024.mappers.EnderecoMapper;
 import br.com.squadra.squadrajavabootcamp2024.mappers.PessoaMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.EnderecoModel;
 import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
+import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.EnderecoRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.PessoaRepository;
 import lombok.AllArgsConstructor;
@@ -22,12 +24,16 @@ import java.util.List;
 public class PessoaService {
 
     private final PessoaRepository pessoaRepository;
-    private final PessoaMapper pessoaMapper;
     private final EnderecoMapper enderecoMapper;
     private final EnderecoRepository enderecoRepository;
+    private final BairroRepository bairroRepository;
+
+    private final PessoaMapper pessoaMapper;
 
 
     public List<PessoaModel> cadastrarPessoa(PessoaCreateDTO request) {
+
+        validarSeBairrosEstaoCadastradosNoBancoDeDados(request.getEnderecos());
 
         if (pessoaRepository.existsByLogin(request.getLogin())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir pessoa no banco de dados. Já existe uma pessoa de login " + request.getLogin() + " cadastrado.");
@@ -55,7 +61,7 @@ public class PessoaService {
         PessoaModel pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
-        validarEnderecos(pessoaAtualizada.getEnderecos());
+        validarSeEnderecosEstaoCadastradosNoBanco(pessoaAtualizada.getEnderecos());
         List<EnderecoModel> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
         removeEnderecosCasoNaoExistaNaListaDeAtualizados(listaDeEnderecosAtualizada, pessoaExistente);
         pessoaMapper.atualizar(pessoaAtualizada, pessoaExistente);
@@ -83,10 +89,18 @@ public class PessoaService {
         enderecoRepository.deleteAll(enderecosParaRemover);
     }
 
-    private void validarEnderecos(List<EnderecoUpdateDTO> enderecosAtualizados) {
+    private void validarSeEnderecosEstaoCadastradosNoBanco(List<EnderecoUpdateDTO> enderecosAtualizados) {
         for (EnderecoUpdateDTO endereco : enderecosAtualizados) {
-            if (endereco.getCodigoEndereco() != null) {
-                enderecoRepository.findById(endereco.getCodigoEndereco()).orElseThrow(() -> new ResourceNotFoundException("o endereço com código " + endereco.getCodigoEndereco() + " não foi encontrado."));
+            if (!enderecoRepository.existsByCodigoEndereco(endereco.getCodigoEndereco())) {
+                throw new ResourceNotFoundException("Não foi possível incluir pessoa no banco de dados. Não existe um endereço com código " + endereco.getCodigoEndereco() + " cadastrado.");
+            }
+        }
+    }
+
+    private void validarSeBairrosEstaoCadastradosNoBancoDeDados(List<EnderecoCreateDTO> enderecos) {
+        for (EnderecoCreateDTO endereco : enderecos) {
+            if (!bairroRepository.existsByCodigoBairro(endereco.getCodigoBairro())) {
+                throw new ResourceNotFoundException("Não foi possível incluir pessoa no banco de dados. Não existe um bairro com código " + endereco.getCodigoBairro() + " cadastrado.");
             }
         }
     }

@@ -24,6 +24,8 @@ public class BairroService {
 
     public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
 
+        validarSeMunicipioEstaCadastradoNoBancoDeDados(request.getCodigoMunicipio());
+
         if (bairroRepository.existsByNome(request.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir bairro no banco de dados. Já existe um bairro de nome " + request.getNome() + " cadastrado.");
         }
@@ -45,9 +47,7 @@ public class BairroService {
 
     public List<BairroModel> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
 
-        if (!municipioRepository.existsByCodigoMunicipio(bairroAtualizado.getCodigoMunicipio())) {
-            throw new ResourceNotFoundException("Não foi encontrado município com o código " + bairroAtualizado.getCodigoMunicipio() + ".");
-        }
+        validarSeMunicipioEstaCadastradoNoBancoDeDados(bairroAtualizado.getCodigoMunicipio());
 
         if (bairroRepository.existsByNomeAndCodigoBairroNot(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro())) {
             throw new ResourceAlreadyExistException("Não foi possível atualizar bairro no banco de dados. Já existe um bairro de nome " + bairroAtualizado.getNome() + " cadastrado.");
@@ -67,5 +67,11 @@ public class BairroService {
                 .orElseThrow(() -> new ResourceNotFoundException("Bairro não encontrado."));
         bairroRepository.delete(bairro);
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
+    }
+
+    private void validarSeMunicipioEstaCadastradoNoBancoDeDados(Long codigoMunicipio) {
+        if (!municipioRepository.existsByCodigoMunicipio(codigoMunicipio)) {
+            throw new ResourceNotFoundException("Não foi encontrado município com o código " + codigoMunicipio + ".");
+        }
     }
 }

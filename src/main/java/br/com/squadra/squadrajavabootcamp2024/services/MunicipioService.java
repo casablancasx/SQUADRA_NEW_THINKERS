@@ -25,9 +25,7 @@ public class MunicipioService {
 
     public List<MunicipioModel> cadastrarMunicipio(MunicipioCreateDTO request) {
 
-        if (!ufRepository.existsByCodigoUF(request.getCodigoUF())) {
-            throw new ResourceNotFoundException("Não foi encontrado UF com o código " + request.getCodigoUF() + ".");
-        }
+        validarSeUfEstaCadastradoNoBancoDeDados(request.getCodigoUF());
 
         if (municipioRepository.existsByNome(request.getNome())) {
             throw new ResourceAlreadyExistException("Não foi possível incluir município no banco de dados. Já existe um município de nome " + request.getNome() + " cadastrado.");
@@ -52,6 +50,8 @@ public class MunicipioService {
 
     public List<MunicipioModel> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
 
+        validarSeUfEstaCadastradoNoBancoDeDados(municipioAtualizado.getCodigoUF());
+
         if (municipioRepository.existsByNomeAndCodigoMunicipioNot(municipioAtualizado.getNome(), municipioAtualizado.getCodigoMunicipio())) {
             throw new ResourceAlreadyExistException("Não foi possível atualizar município no banco de dados. Já existe um município de nome " + municipioAtualizado.getNome() + " cadastrado.");
         }
@@ -71,6 +71,12 @@ public class MunicipioService {
                 .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
         municipioRepository.delete(municipio);
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
+    }
+
+    private void validarSeUfEstaCadastradoNoBancoDeDados(Long codigoUF) {
+        if (!ufRepository.existsByCodigoUF(codigoUF)) {
+            throw new ResourceNotFoundException("Não foi encontrado UF com o código " + codigoUF + ".");
+        }
     }
 
 
