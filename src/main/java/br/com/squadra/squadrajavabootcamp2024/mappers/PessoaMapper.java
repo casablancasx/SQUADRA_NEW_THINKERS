@@ -5,10 +5,7 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.PessoaResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
@@ -23,4 +20,11 @@ public interface PessoaMapper {
     PessoaResponseDTO toResponseDTO(PessoaModel model);
 
     void atualizar(PessoaUpdateDTO pessoaAtualizada, @MappingTarget PessoaModel pessoaExistente);
+
+    @AfterMapping
+    default void linkarEnderecosComPessoa(@MappingTarget PessoaModel pessoaModel) {
+        if (pessoaModel.getEnderecos() != null) {
+            pessoaModel.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoaModel));
+        }
+    }
 }

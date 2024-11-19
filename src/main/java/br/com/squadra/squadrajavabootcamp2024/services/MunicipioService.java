@@ -2,39 +2,35 @@ package br.com.squadra.squadrajavabootcamp2024.services;
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.MunicipioCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
-import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.MunicipioMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
-import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
-import lombok.AllArgsConstructor;
+import br.com.squadra.squadrajavabootcamp2024.services.validators.MunicipioValidator;
+import br.com.squadra.squadrajavabootcamp2024.services.validators.UfValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MunicipioService {
 
     private final MunicipioRepository municipioRepository;
-    private final UfRepository ufRepository;
-
     private final MunicipioMapper municipioMapper;
+    private final UfValidator ufValidator;
+    private final MunicipioValidator municipioValidator;
 
 
     public List<MunicipioModel> cadastrarMunicipio(MunicipioCreateDTO request) {
 
-        verificarSeUfExisteNoBanco(request.getCodigoUF());
-
-        if (municipioRepository.existsByNome(request.getNome())) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir município no banco de dados. Já existe um município de nome " + request.getNome() + " cadastrado.");
-        }
+        ufValidator.verificarSeUFexisteNoBanco(request.getCodigoUF());
+        municipioValidator.verificarDuplicidadeDeNome(request.getNome());
 
         municipioRepository.save(municipioMapper.toEntity(request));
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
-
     }
 
 
@@ -51,20 +47,16 @@ public class MunicipioService {
 
     public List<MunicipioModel> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
 
-        verificarSeUfExisteNoBanco(municipioAtualizado.getCodigoUF());
-
-        if (municipioRepository.existsByNomeAndCodigoMunicipioNot(municipioAtualizado.getNome(), municipioAtualizado.getCodigoMunicipio())) {
-            throw new ResourceAlreadyExistException("Não foi possível atualizar município no banco de dados. Já existe um município de nome " + municipioAtualizado.getNome() + " cadastrado.");
-        }
+        ufValidator.verificarSeUFexisteNoBanco(municipioAtualizado.getCodigoUF());
+        municipioValidator.verificarNomeUnicoExcetoParaMunicipio(municipioAtualizado.getNome(), municipioAtualizado.getCodigoMunicipio());
 
         MunicipioModel municipioExistente = municipioRepository.findById(municipioAtualizado.getCodigoMunicipio())
-                .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado de id " + municipioAtualizado.getCodigoMunicipio() + " não foi encontrado") );
 
         municipioMapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
         municipioRepository.save(municipioExistente);
 
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
-
     }
 
     public List<MunicipioModel> deletarMunicipio(Long codigoMunicipio) {
@@ -73,12 +65,5 @@ public class MunicipioService {
         municipioRepository.delete(municipio);
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
     }
-
-    private void verificarSeUfExisteNoBanco(Long codigoUF) {
-        if (!ufRepository.existsByCodigoUF(codigoUF)) {
-            throw new ResourceNotFoundException("Não foi encontrado UF com o código " + codigoUF + ".");
-        }
-    }
-
 
 }

@@ -14,7 +14,7 @@ public class BairroCreateDTO {
     @Digits(integer = 10, fraction = 0, message = "O campo codigoMunicipio deve conter apenas números")
     private Long codigoMunicipio;
 
-    @Pattern(regexp = "^[A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ\\s]+$", message = "O campo nome deve conter apenas letras maiúsculas e não pode ser vazio")
+    @Pattern(regexp = "^[A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ\s]+$", message = "O campo nome deve conter apenas letras maiúsculas e não pode ser vazio")
     @NotBlank(message = "O campo nome é obrigatório")
     private String nome;
 

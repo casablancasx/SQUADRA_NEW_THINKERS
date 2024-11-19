@@ -22,6 +22,7 @@ public class BairroUpdateDTO {
     private Long codigoMunicipio;
 
     @NotBlank(message = "O nome do bairro é obrigatório")
+    @Pattern(regexp = "^[A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ\s]+$", message = "O nome do bairro deve conter apenas letras maiúsculas")
     private String nome;
 
     @Min(value = 1, message = "O status do bairro deve ser 1 ou 2")

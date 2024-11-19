@@ -3,33 +3,30 @@ package br.com.squadra.squadrajavabootcamp2024.services;
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.BairroCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
-import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.BairroMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
-import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
-import lombok.AllArgsConstructor;
+import br.com.squadra.squadrajavabootcamp2024.services.validators.BairroValidator;
+import br.com.squadra.squadrajavabootcamp2024.services.validators.MunicipioValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BairroService {
 
     private final BairroRepository bairroRepository;
-    private final MunicipioRepository municipioRepository;
+    private final MunicipioValidator municipioValidator;
+    private final BairroValidator bairroValidator;
     private final BairroMapper mapper;
 
     public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
 
-        validarSeMunicipioEstaCadastradoNoBancoDeDados(request.getCodigoMunicipio());
-
-        if (bairroRepository.existsByNome(request.getNome())) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir bairro no banco de dados. Já existe um bairro de nome " + request.getNome() + " cadastrado.");
-        }
-
+        municipioValidator.verificarSeMunicipioExisteNoBanco(request.getCodigoMunicipio());
+        bairroValidator.verificarDuplicidadeDeNome(request.getNome());
         bairroRepository.save(mapper.toEntity(request));
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
@@ -47,14 +44,12 @@ public class BairroService {
 
     public List<BairroModel> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
 
-        validarSeMunicipioEstaCadastradoNoBancoDeDados(bairroAtualizado.getCodigoMunicipio());
+        municipioValidator.verificarSeMunicipioExisteNoBanco(bairroAtualizado.getCodigoMunicipio());
 
-        if (bairroRepository.existsByNomeAndCodigoBairroNot(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro())) {
-            throw new ResourceAlreadyExistException("Não foi possível atualizar bairro no banco de dados. Já existe um bairro de nome " + bairroAtualizado.getNome() + " cadastrado.");
-        }
+        bairroValidator.verificarNomeUnicoExcetoParaBairro(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro());
 
         BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
-                .orElseThrow(() -> new IllegalArgumentException("Bairro não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bairro não encontrado de id " + bairroAtualizado.getCodigoBairro() + " não foi encontrado"));
 
         mapper.atualizarBairro(bairroAtualizado, bairroExistente);
         bairroRepository.save(bairroExistente);
@@ -69,9 +64,4 @@ public class BairroService {
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
 
-    private void validarSeMunicipioEstaCadastradoNoBancoDeDados(Long codigoMunicipio) {
-        if (!municipioRepository.existsByCodigoMunicipio(codigoMunicipio)) {
-            throw new ResourceNotFoundException("Não foi encontrado município com o código " + codigoMunicipio + ".");
-        }
-    }
 }
