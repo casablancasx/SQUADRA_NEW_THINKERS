@@ -41,6 +41,6 @@ public class PessoaModel {
 
     @JsonProperty("enderecos")
     public List<Object> getListaVazia() {
-        return enderecos != null ? List.of() : null;
+        return List.of();
     }
 }
