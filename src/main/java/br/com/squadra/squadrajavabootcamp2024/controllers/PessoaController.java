@@ -5,7 +5,7 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
 import br.com.squadra.squadrajavabootcamp2024.services.PessoaService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pessoa")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PessoaController {
 
     private final PessoaService pessoaService;

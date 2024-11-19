@@ -5,7 +5,7 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.update.UfUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.UfModel;
 import br.com.squadra.squadrajavabootcamp2024.services.UfService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/uf")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UfController {
 
     private final UfService ufService;

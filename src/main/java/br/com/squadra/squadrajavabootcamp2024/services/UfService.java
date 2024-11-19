@@ -7,13 +7,13 @@ import br.com.squadra.squadrajavabootcamp2024.mappers.UfMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.UfModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
 import br.com.squadra.squadrajavabootcamp2024.services.validators.UfValidator;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UfService {
 
     private final UfRepository ufrepository;
@@ -23,9 +23,7 @@ public class UfService {
     private final UfValidator ufValidator;
 
 
-
-
-    public List<UfModel> cadastrarUF(UfCreateDTO requestDTO){
+    public List<UfModel> cadastrarUF(UfCreateDTO requestDTO) {
 
         ufValidator.verificarDuplicidadeDeNomeOuSigla(requestDTO.getNome(), requestDTO.getSigla());
         UfModel model = ufMapper.toEntity(requestDTO);

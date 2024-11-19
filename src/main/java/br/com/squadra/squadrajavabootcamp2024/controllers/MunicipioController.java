@@ -5,7 +5,7 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
 import br.com.squadra.squadrajavabootcamp2024.services.MunicipioService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/municipio")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MunicipioController {
 
     private final MunicipioService municipioService;
