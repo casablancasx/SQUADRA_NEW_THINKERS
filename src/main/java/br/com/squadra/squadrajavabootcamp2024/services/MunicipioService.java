@@ -10,6 +10,7 @@ import br.com.squadra.squadrajavabootcamp2024.services.validators.MunicipioValid
 import br.com.squadra.squadrajavabootcamp2024.services.validators.UfValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class MunicipioService {
     private final UfValidator ufValidator;
     private final MunicipioValidator municipioValidator;
 
-
+    @Transactional
     public List<MunicipioModel> cadastrarMunicipio(MunicipioCreateDTO request) {
 
         ufValidator.verificarSeUFexisteNoBanco(request.getCodigoUF());
@@ -47,6 +48,7 @@ public class MunicipioService {
         return municipios;
     }
 
+    @Transactional
     public List<MunicipioModel> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
 
         ufValidator.verificarSeUFexisteNoBanco(municipioAtualizado.getCodigoUF());
@@ -61,6 +63,7 @@ public class MunicipioService {
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
     }
 
+    @Transactional
     public List<MunicipioModel> deletarMunicipio(Long codigoMunicipio) {
         MunicipioModel municipio = municipioRepository.findById(codigoMunicipio)
                 .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));

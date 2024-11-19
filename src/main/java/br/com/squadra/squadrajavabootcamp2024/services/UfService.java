@@ -9,6 +9,7 @@ import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
 import br.com.squadra.squadrajavabootcamp2024.services.validators.UfValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class UfService {
 
     private final UfValidator ufValidator;
 
-
+    @Transactional
     public List<UfModel> cadastrarUF(UfCreateDTO requestDTO) {
 
         ufValidator.verificarDuplicidadeDeNomeOuSigla(requestDTO.getNome(), requestDTO.getSigla());
@@ -41,7 +42,7 @@ public class UfService {
         return listaUfs;
     }
 
-
+    @Transactional
     public List<UfModel> atualizarUF(UfUpdateDTO ufAtualizada) {
 
         ufValidator.verificarNomeESiglaUnicosExcetoParaUF(ufAtualizada.getNome(), ufAtualizada.getSigla(), ufAtualizada.getCodigoUF());
@@ -53,6 +54,7 @@ public class UfService {
 
     }
 
+    @Transactional
     public List<UfModel> deletarUF(Long codigoUF) {
         UfModel model = ufrepository.findByCodigoUF(codigoUF).orElseThrow(() -> new ResourceNotFoundException("O códigoUF(" + codigoUF + ") não foi encontrado."));
         ufrepository.delete(model);

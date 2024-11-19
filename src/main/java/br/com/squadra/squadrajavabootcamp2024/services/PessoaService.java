@@ -14,6 +14,7 @@ import br.com.squadra.squadrajavabootcamp2024.services.validators.EnderecoValida
 import br.com.squadra.squadrajavabootcamp2024.services.validators.PessoaValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class PessoaService {
     private final PessoaValidator pessoaValidator;
 
 
-
+    @Transactional
     public List<PessoaModel> cadastrarPessoa(PessoaCreateDTO request) {
         bairroValidator.verificarSeBairrosEstaoCadastradosNoBanco(request.getEnderecos());
         pessoaValidator.verificarDuplicidadeDeLogin(request.getLogin());
@@ -50,6 +51,7 @@ public class PessoaService {
         return pessoaModelList;
     }
 
+    @Transactional
     public List<PessoaModel> atualizarPessoa(PessoaUpdateDTO pessoaAtualizada) {
         PessoaModel pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
@@ -62,6 +64,7 @@ public class PessoaService {
         return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
 
+    @Transactional
     public List<PessoaModel> deletarPessoa(Long codigoPessoa) {
 
         PessoaModel pessoa = pessoaRepository.findById(codigoPessoa)

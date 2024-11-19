@@ -11,6 +11,7 @@ import br.com.squadra.squadrajavabootcamp2024.services.validators.BairroValidato
 import br.com.squadra.squadrajavabootcamp2024.services.validators.MunicipioValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class BairroService {
     private final MunicipioValidator municipioValidator;
     private final BairroValidator bairroValidator;
 
+    @Transactional
     public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
 
         municipioValidator.verificarSeMunicipioExisteNoBanco(request.getCodigoMunicipio());
@@ -43,7 +45,7 @@ public class BairroService {
         return listaBairros;
     }
 
-
+    @Transactional
     public List<BairroModel> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
 
         municipioValidator.verificarSeMunicipioExisteNoBanco(bairroAtualizado.getCodigoMunicipio());
@@ -59,6 +61,7 @@ public class BairroService {
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
 
+    @Transactional
     public List<BairroModel> deletarBairro(Long codigoBairro) {
         BairroModel bairro = bairroRepository.findById(codigoBairro)
                 .orElseThrow(() -> new ResourceNotFoundException("Bairro não encontrado."));
