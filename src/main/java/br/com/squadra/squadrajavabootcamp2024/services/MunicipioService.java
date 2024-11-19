@@ -19,7 +19,9 @@ import java.util.List;
 public class MunicipioService {
 
     private final MunicipioRepository municipioRepository;
+
     private final MunicipioMapper municipioMapper;
+
     private final UfValidator ufValidator;
     private final MunicipioValidator municipioValidator;
 

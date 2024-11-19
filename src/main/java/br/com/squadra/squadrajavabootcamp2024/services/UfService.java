@@ -18,9 +18,11 @@ public class UfService {
 
     private final UfRepository ufrepository;
 
+    private final UfMapper ufMapper;
+
     private final UfValidator ufValidator;
 
-    private final UfMapper ufMapper;
+
 
 
     public List<UfModel> cadastrarUF(UfCreateDTO requestDTO){

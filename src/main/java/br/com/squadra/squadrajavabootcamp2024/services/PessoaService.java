@@ -25,12 +25,13 @@ public class PessoaService {
     private final PessoaRepository pessoaRepository;
     private final EnderecoRepository enderecoRepository;
 
+    private final EnderecoMapper enderecoMapper;
+    private final PessoaMapper pessoaMapper;
+
     private final EnderecoValidator enderecoValidator;
     private final BairroValidator bairroValidator;
     private final PessoaValidator pessoaValidator;
 
-    private final EnderecoMapper enderecoMapper;
-    private final PessoaMapper pessoaMapper;
 
 
     public List<PessoaModel> cadastrarPessoa(PessoaCreateDTO request) {

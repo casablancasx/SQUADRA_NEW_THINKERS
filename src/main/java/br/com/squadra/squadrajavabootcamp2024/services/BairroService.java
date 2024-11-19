@@ -19,15 +19,17 @@ import java.util.List;
 public class BairroService {
 
     private final BairroRepository bairroRepository;
+
+    private final BairroMapper bairroMapper;
+
     private final MunicipioValidator municipioValidator;
     private final BairroValidator bairroValidator;
-    private final BairroMapper mapper;
 
     public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
 
         municipioValidator.verificarSeMunicipioExisteNoBanco(request.getCodigoMunicipio());
         bairroValidator.verificarDuplicidadeDeNome(request.getNome());
-        bairroRepository.save(mapper.toEntity(request));
+        bairroRepository.save(bairroMapper.toEntity(request));
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
 
@@ -51,7 +53,7 @@ public class BairroService {
         BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
                 .orElseThrow(() -> new ResourceNotFoundException("Bairro não encontrado de id " + bairroAtualizado.getCodigoBairro() + " não foi encontrado"));
 
-        mapper.atualizarBairro(bairroAtualizado, bairroExistente);
+        bairroMapper.atualizarBairro(bairroAtualizado, bairroExistente);
         bairroRepository.save(bairroExistente);
 
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
