@@ -17,7 +17,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UfUpdateDTO {
+public class UFUpdateDTO {
 
     @NotNull(message = "O campo código é obrigatório")
     private Long codigoUF;

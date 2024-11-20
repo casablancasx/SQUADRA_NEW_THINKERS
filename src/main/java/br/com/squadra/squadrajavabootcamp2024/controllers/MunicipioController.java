@@ -2,7 +2,7 @@ package br.com.squadra.squadrajavabootcamp2024.controllers;
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.MunicipioCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
-import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
+import br.com.squadra.squadrajavabootcamp2024.entities.MunicipioEntity;
 import br.com.squadra.squadrajavabootcamp2024.services.MunicipioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class MunicipioController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<MunicipioModel> cadastrarMunicipio(@Valid @RequestBody MunicipioCreateDTO requestDTO) {
+    public List<MunicipioEntity> cadastrarMunicipio(@Valid @RequestBody MunicipioCreateDTO requestDTO) {
         return municipioService.cadastrarMunicipio(requestDTO);
     }
 
@@ -48,7 +48,7 @@ public class MunicipioController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<MunicipioModel> atualizarMunicipio(@Valid @RequestBody MunicipioUpdateDTO municipioAtualizado) {
+    public List<MunicipioEntity> atualizarMunicipio(@Valid @RequestBody MunicipioUpdateDTO municipioAtualizado) {
         return municipioService.atualizarMunicipio(municipioAtualizado);
     }
 

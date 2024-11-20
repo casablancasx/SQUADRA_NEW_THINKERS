@@ -3,7 +3,7 @@ package br.com.squadra.squadrajavabootcamp2024.controllers;
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.BairroCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
-import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
+import br.com.squadra.squadrajavabootcamp2024.entities.BairroEntity;
 import br.com.squadra.squadrajavabootcamp2024.services.BairroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class BairroController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<BairroModel> cadastrarBairro(@Valid @RequestBody BairroCreateDTO request) {
+    public List<BairroEntity> cadastrarBairro(@Valid @RequestBody BairroCreateDTO request) {
         return bairroService.cadastrarBairro(request);
     }
 
@@ -49,7 +49,7 @@ public class BairroController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<BairroModel> atualizarBairro(@Valid @RequestBody BairroUpdateDTO bairroAtualizado) {
+    public List<BairroEntity> atualizarBairro(@Valid @RequestBody BairroUpdateDTO bairroAtualizado) {
         return bairroService.atualizarBairro(bairroAtualizado);
     }
 

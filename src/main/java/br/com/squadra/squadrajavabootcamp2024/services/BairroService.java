@@ -6,7 +6,7 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.BairroMapper;
-import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
+import br.com.squadra.squadrajavabootcamp2024.entities.BairroEntity;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class BairroService {
     private final BairroMapper mapper;
 
     @Transactional
-    public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
+    public List<BairroEntity> cadastrarBairro(BairroCreateDTO request) {
 
         verificaSeMunicipioExiste(request.getCodigoMunicipio());
         verificaDuplicidadeDeNome(request.getNome());
@@ -34,7 +34,7 @@ public class BairroService {
     }
 
     public Object buscarBairroPorFiltro(Long codigoBairro, Long codigoMunicipio, String nome, Integer status) {
-        List<BairroModel> listaBairros = bairroRepository.findByFiltro(codigoBairro, codigoMunicipio, nome, status);
+        List<BairroEntity> listaBairros = bairroRepository.findByFiltro(codigoBairro, codigoMunicipio, nome, status);
 
         if (codigoBairro != null) {
             return listaBairros.isEmpty() ? List.of() : listaBairros.get(0);
@@ -45,13 +45,13 @@ public class BairroService {
 
 
     @Transactional
-    public List<BairroModel> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
+    public List<BairroEntity> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
 
         verificaSeMunicipioExiste(bairroAtualizado.getCodigoMunicipio());
 
         verificaDuplicidadeDeNomeExcetoParaBairro(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro());
 
-        BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
+        BairroEntity bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
                 .orElseThrow(() -> new IllegalArgumentException("Bairro não encontrado"));
 
         mapper.atualizarBairro(bairroAtualizado, bairroExistente);
@@ -62,7 +62,7 @@ public class BairroService {
 
     @Transactional
     public void deletarBairro(Long codigoBairro) {
-        BairroModel entity = bairroRepository.findById(codigoBairro)
+        BairroEntity entity = bairroRepository.findById(codigoBairro)
                 .orElseThrow(() -> new ResourceNotFoundException("Bairro não encontrado."));
         bairroRepository.delete(entity);
     }

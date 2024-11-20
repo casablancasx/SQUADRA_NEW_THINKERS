@@ -3,7 +3,7 @@ package br.com.squadra.squadrajavabootcamp2024.mappers;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.BairroCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.BairroResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
-import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
+import br.com.squadra.squadrajavabootcamp2024.entities.BairroEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -17,12 +17,12 @@ public interface BairroMapper {
     @Mapping(target = "codigoBairro", ignore = true)
     @Mapping(target = "enderecos", ignore = true)
     @Mapping(source = "codigoMunicipio", target = "municipio.codigoMunicipio")
-    BairroModel toEntity(BairroCreateDTO requestDTO);
+    BairroEntity toEntity(BairroCreateDTO requestDTO);
 
     @Mapping(source = "municipio.codigoMunicipio", target = "codigoMunicipio")
-    BairroResponseDTO toResponseDTO(BairroModel model);
+    BairroResponseDTO toResponseDTO(BairroEntity entity);
 
     @Mapping(source = "codigoMunicipio", target = "municipio.codigoMunicipio")
     @Mapping(target = "enderecos", ignore = true)
-    void atualizarBairro(BairroUpdateDTO bairroAtualizado, @MappingTarget BairroModel bairroExistente);
+    void atualizarBairro(BairroUpdateDTO bairroAtualizado, @MappingTarget BairroEntity bairroExistente);
 }

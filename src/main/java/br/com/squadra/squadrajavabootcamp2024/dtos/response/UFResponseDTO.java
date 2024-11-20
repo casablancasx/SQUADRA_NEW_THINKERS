@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UfResponseDTO {
+public class UFResponseDTO {
 
     private Long codigoUF;
 

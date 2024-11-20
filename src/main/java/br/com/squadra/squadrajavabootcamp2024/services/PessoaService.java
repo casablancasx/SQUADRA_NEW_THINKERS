@@ -8,8 +8,8 @@ import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistExc
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.EnderecoMapper;
 import br.com.squadra.squadrajavabootcamp2024.mappers.PessoaMapper;
-import br.com.squadra.squadrajavabootcamp2024.models.EnderecoModel;
-import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
+import br.com.squadra.squadrajavabootcamp2024.entities.EnderecoEntity;
+import br.com.squadra.squadrajavabootcamp2024.entities.PessoaEntity;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.EnderecoRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.PessoaRepository;
@@ -33,39 +33,39 @@ public class PessoaService {
 
 
     @Transactional
-    public List<PessoaModel> cadastrarPessoa(PessoaCreateDTO request) {
+    public List<PessoaEntity> cadastrarPessoa(PessoaCreateDTO request) {
 
         validarSeBairrosEstaoCadastradosNoBancoDeDados(request.getEnderecos());
 
         verificarDuplicidadeDeLogin(request.getLogin());
 
-        PessoaModel pessoaModel = pessoaMapper.toEntity(request);
+        PessoaEntity pessoaEntity = pessoaMapper.toEntity(request);
 
-        pessoaRepository.save(pessoaModel);
+        pessoaRepository.save(pessoaEntity);
 
         return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
 
     public Object buscarPessoaPorFiltro(Long codigoPessoa, String login, Integer status) {
 
-        List<PessoaModel> pessoaModelList = pessoaRepository.findByFiltro(codigoPessoa, login, status);
+        List<PessoaEntity> pessoaEntityList = pessoaRepository.findByFiltro(codigoPessoa, login, status);
 
         if (codigoPessoa != null) {
-            return pessoaModelList.isEmpty() ? List.of() : pessoaMapper.toResponseDTO(pessoaModelList.get(0));
+            return pessoaEntityList.isEmpty() ? List.of() : pessoaMapper.toResponseDTO(pessoaEntityList.get(0));
         }
 
-        return pessoaModelList;
+        return pessoaEntityList;
     }
 
     @Transactional
-    public List<PessoaModel> atualizarPessoa(PessoaUpdateDTO pessoaAtualizada) {
+    public List<PessoaEntity> atualizarPessoa(PessoaUpdateDTO pessoaAtualizada) {
 
-        PessoaModel pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
+        PessoaEntity pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
         verificarSeEnderecosExistem(pessoaAtualizada.getEnderecos());
 
-        List<EnderecoModel> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
+        List<EnderecoEntity> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
 
         removeEnderecosCasoNaoExistaNaListaDeAtualizados(listaDeEnderecosAtualizada, pessoaExistente);
 
@@ -81,17 +81,17 @@ public class PessoaService {
     @Transactional
     public void deletarPessoa(Long codigoPessoa) {
 
-        PessoaModel entity = pessoaRepository.findById(codigoPessoa)
+        PessoaEntity entity = pessoaRepository.findById(codigoPessoa)
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
         pessoaRepository.delete(entity);
     }
 
-    private void removeEnderecosCasoNaoExistaNaListaDeAtualizados(List<EnderecoModel> listaDeEnderecosAtualizada, PessoaModel pessoaExistente) {
-        List<Long> listaDeEnderecosAtualizadaIds = listaDeEnderecosAtualizada.stream().map(EnderecoModel::getCodigoEndereco).toList();
-        List<EnderecoModel> enderecosParaRemover = new ArrayList<>();
+    private void removeEnderecosCasoNaoExistaNaListaDeAtualizados(List<EnderecoEntity> listaDeEnderecosAtualizada, PessoaEntity pessoaExistente) {
+        List<Long> listaDeEnderecosAtualizadaIds = listaDeEnderecosAtualizada.stream().map(EnderecoEntity::getCodigoEndereco).toList();
+        List<EnderecoEntity> enderecosParaRemover = new ArrayList<>();
 
-        for (EnderecoModel enderecoExistente : pessoaExistente.getEnderecos()) {
+        for (EnderecoEntity enderecoExistente : pessoaExistente.getEnderecos()) {
             if (!listaDeEnderecosAtualizadaIds.contains(enderecoExistente.getCodigoEndereco())) {
                 enderecosParaRemover.add(enderecoExistente);
             }

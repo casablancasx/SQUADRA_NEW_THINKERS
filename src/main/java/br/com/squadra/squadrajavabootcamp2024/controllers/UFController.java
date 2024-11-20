@@ -1,9 +1,9 @@
 package br.com.squadra.squadrajavabootcamp2024.controllers;
 
-import br.com.squadra.squadrajavabootcamp2024.dtos.create.UfCreateDTO;
-import br.com.squadra.squadrajavabootcamp2024.dtos.update.UfUpdateDTO;
-import br.com.squadra.squadrajavabootcamp2024.models.UfModel;
-import br.com.squadra.squadrajavabootcamp2024.services.UfService;
+import br.com.squadra.squadrajavabootcamp2024.dtos.create.UFCreateDTO;
+import br.com.squadra.squadrajavabootcamp2024.dtos.update.UFUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.entities.UFEntity;
+import br.com.squadra.squadrajavabootcamp2024.services.UFService;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -26,13 +26,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/uf")
 @RequiredArgsConstructor
-public class UfController {
+public class UFController {
 
-    private final UfService ufService;
+    private final UFService ufService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UfModel> cadastrarUF(@Valid @RequestBody UfCreateDTO requestDTO) {
+    public List<UFEntity> cadastrarUF(@Valid @RequestBody UFCreateDTO requestDTO) {
         return ufService.cadastrarUF(requestDTO);
     }
 
@@ -49,7 +49,7 @@ public class UfController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UfModel> atualizarUF(@Valid @RequestBody UfUpdateDTO ufAtualizada) {
+    public List<UFEntity> atualizarUF(@Valid @RequestBody UFUpdateDTO ufAtualizada) {
         return ufService.atualizarUF(ufAtualizada);
     }
 

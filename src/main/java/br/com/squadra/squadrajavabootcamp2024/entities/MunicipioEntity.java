@@ -1,4 +1,4 @@
-package br.com.squadra.squadrajavabootcamp2024.models;
+package br.com.squadra.squadrajavabootcamp2024.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,34 +20,35 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_bairro")
+@Table(name = "tb_municipio")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BairroModel {
+public class MunicipioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigoBairro;
+    private Long codigoMunicipio;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String nome;
 
+    @Column(nullable = false)
     private Integer status;
 
     @ManyToOne
-    @JoinColumn(name = "codigoMunicipio")
+    @JoinColumn(name = "codigoUF")
     @JsonIgnore
-    private MunicipioModel municipio;
+    private UFEntity uf;
 
-    @OneToMany(mappedBy = "bairro", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "municipio", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<EnderecoModel> enderecos;
+    private List<BairroEntity> bairros;
 
 
-    @JsonProperty("codigoMunicipio")
-    public Long getCodigoMunicipio() {
-        return municipio != null ? municipio.getCodigoMunicipio() : null;
+    @JsonProperty("codigoUF")
+    public Long getCodigoUF() {
+        return uf != null ? uf.getCodigoUF() : null;
     }
 }

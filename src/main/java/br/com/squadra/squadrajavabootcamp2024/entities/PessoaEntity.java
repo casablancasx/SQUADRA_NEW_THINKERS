@@ -1,6 +1,7 @@
-package br.com.squadra.squadrajavabootcamp2024.models;
+package br.com.squadra.squadrajavabootcamp2024.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,27 +18,36 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_uf")
+@Table(name = "tb_pessoa")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UfModel {
+public class PessoaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigoUF;
+    private Long codigoPessoa;
 
-    @Column(length = 2, unique = true, nullable = false)
-    private String sigla;
-
-    @Column(length = 50, unique = true)
     private String nome;
 
-    @Column(nullable = false)
+    private String sobrenome;
+
+    private Integer idade;
+
+    @Column(unique = true)
+    private String login;
+
+    private String senha;
+
     private Integer status;
 
-    @OneToMany(mappedBy = "uf", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<MunicipioModel> municipios;
+    private List<EnderecoEntity> enderecos;
+
+    @JsonProperty("enderecos")
+    public List<Object> getListaVazia() {
+        return List.of();
+    }
 }

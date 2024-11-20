@@ -21,5 +21,5 @@ public class MunicipioResponseDTO {
 
     private Integer status;
 
-    private UfResponseDTO uf;
+    private UFResponseDTO uf;
 }

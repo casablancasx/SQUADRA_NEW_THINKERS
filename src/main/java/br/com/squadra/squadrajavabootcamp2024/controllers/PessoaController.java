@@ -2,7 +2,7 @@ package br.com.squadra.squadrajavabootcamp2024.controllers;
 
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
-import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
+import br.com.squadra.squadrajavabootcamp2024.entities.PessoaEntity;
 import br.com.squadra.squadrajavabootcamp2024.services.PessoaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class PessoaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PessoaModel> cadastrarPessoa(@Valid @RequestBody PessoaCreateDTO request) {
+    public List<PessoaEntity> cadastrarPessoa(@Valid @RequestBody PessoaCreateDTO request) {
         return pessoaService.cadastrarPessoa(request);
     }
 
@@ -44,7 +44,7 @@ public class PessoaController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PessoaModel> atualizarPessoa(@Valid @RequestBody PessoaUpdateDTO pessoaAtualizada) {
+    public List<PessoaEntity> atualizarPessoa(@Valid @RequestBody PessoaUpdateDTO pessoaAtualizada) {
         return pessoaService.atualizarPessoa(pessoaAtualizada);
     }
 

@@ -1,15 +1,12 @@
-package br.com.squadra.squadrajavabootcamp2024.models;
+package br.com.squadra.squadrajavabootcamp2024.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -20,35 +17,27 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_municipio")
+@Table(name = "tb_uf")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MunicipioModel {
+public class UFEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigoMunicipio;
+    private Long codigoUF;
 
-    @Column(unique = true, nullable = false)
+    @Column(length = 2, unique = true, nullable = false)
+    private String sigla;
+
+    @Column(length = 50, unique = true)
     private String nome;
 
     @Column(nullable = false)
     private Integer status;
 
-    @ManyToOne
-    @JoinColumn(name = "codigoUF")
+    @OneToMany(mappedBy = "uf", cascade = CascadeType.ALL)
     @JsonIgnore
-    private UfModel uf;
-
-    @OneToMany(mappedBy = "municipio", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<BairroModel> bairros;
-
-
-    @JsonProperty("codigoUF")
-    public Long getCodigoUF() {
-        return uf != null ? uf.getCodigoUF() : null;
-    }
+    private List<MunicipioEntity> municipios;
 }

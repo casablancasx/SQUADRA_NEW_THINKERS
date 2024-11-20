@@ -1,4 +1,4 @@
-package br.com.squadra.squadrajavabootcamp2024.models;
+package br.com.squadra.squadrajavabootcamp2024.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnderecoModel {
+public class EnderecoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +34,9 @@ public class EnderecoModel {
 
     @ManyToOne
     @JoinColumn(name = "codigoBairro")
-    private BairroModel bairro;
+    private BairroEntity bairro;
 
     @ManyToOne
     @JoinColumn(name = "codigoPessoa", nullable = false)
-    private PessoaModel pessoa;
+    private PessoaEntity pessoa;
 }

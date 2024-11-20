@@ -5,7 +5,7 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.update.MunicipioUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.MunicipioMapper;
-import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
+import br.com.squadra.squadrajavabootcamp2024.entities.MunicipioEntity;
 import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class MunicipioService {
     private final MunicipioMapper municipioMapper;
 
     @Transactional
-    public List<MunicipioModel> cadastrarMunicipio(MunicipioCreateDTO request) {
+    public List<MunicipioEntity> cadastrarMunicipio(MunicipioCreateDTO request) {
 
         verificarSeUfExiste(request.getCodigoUF());
 
@@ -40,7 +40,7 @@ public class MunicipioService {
 
     public Object buscarPorFiltro(Long codigoMunicipio, Long codigoUF, String nome, Integer status) {
 
-        List<MunicipioModel> municipios = municipioRepository.findByFiltro(codigoMunicipio, codigoUF, nome, status);
+        List<MunicipioEntity> municipios = municipioRepository.findByFiltro(codigoMunicipio, codigoUF, nome, status);
 
         if (codigoMunicipio != null) {
             return municipios.isEmpty() ? List.of() : municipios.get(0);
@@ -50,13 +50,13 @@ public class MunicipioService {
     }
 
     @Transactional
-    public List<MunicipioModel> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
+    public List<MunicipioEntity> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
 
         verificarSeUfExiste(municipioAtualizado.getCodigoUF());
 
         verificarDuplicidadeDeNomeExcetoParaMunicipio(municipioAtualizado.getNome(), municipioAtualizado.getCodigoMunicipio());
 
-        MunicipioModel municipioExistente = municipioRepository.findById(municipioAtualizado.getCodigoMunicipio())
+        MunicipioEntity municipioExistente = municipioRepository.findById(municipioAtualizado.getCodigoMunicipio())
                 .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
 
         municipioMapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
@@ -70,7 +70,7 @@ public class MunicipioService {
     @Transactional
     public void deletarMunicipio(Long codigoMunicipio) {
 
-        MunicipioModel entity = municipioRepository.findById(codigoMunicipio)
+        MunicipioEntity entity = municipioRepository.findById(codigoMunicipio)
                 .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
 
         municipioRepository.delete(entity);

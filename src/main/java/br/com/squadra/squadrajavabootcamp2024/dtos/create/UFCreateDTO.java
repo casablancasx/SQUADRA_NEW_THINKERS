@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UfCreateDTO {
+public class UFCreateDTO {
 
     @NotBlank(message = "O campo sigla é obrigatório")
     @Size(min = 2, max = 2, message = "A sigla deve ter 2 caracteres")
