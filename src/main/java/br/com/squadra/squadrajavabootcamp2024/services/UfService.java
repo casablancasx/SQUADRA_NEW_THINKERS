@@ -7,21 +7,23 @@ import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundExcepti
 import br.com.squadra.squadrajavabootcamp2024.mappers.UfMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.UfModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
-import lombok.AllArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UfService {
 
     private final UfRepository ufrepository;
 
     private final UfMapper mapper;
 
-
+    @Transactional
     public List<UfModel> cadastrarUF(UfCreateDTO requestDTO){
 
         verificarDuplicidadeDeNomeOuSigla(requestDTO.getNome(), requestDTO.getSigla());
@@ -42,7 +44,7 @@ public class UfService {
         return listaUfs;
     }
 
-
+    @Transactional
     public List<UfModel> atualizarUF(UfUpdateDTO ufAtualizada) {
 
        verificarDuplicidadeDeNomeOuSiglaExcetoParaUF(ufAtualizada.getNome(), ufAtualizada.getSigla(), ufAtualizada.getCodigoUF());
@@ -53,6 +55,7 @@ public class UfService {
 
     }
 
+    @Transactional
     public List<UfModel> deletarUF(Long codigoUF) {
         UfModel entity = ufrepository.findById(codigoUF).orElseThrow(() -> new ResourceNotFoundException("O códigoUF(" + codigoUF + ") não foi encontrado."));
         ufrepository.delete(entity);

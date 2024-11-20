@@ -5,47 +5,58 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.update.UfUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.UfModel;
 import br.com.squadra.squadrajavabootcamp2024.services.UfService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 
 @RestController
 @RequestMapping("/uf")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UfController {
 
     private final UfService ufService;
 
     @PostMapping
-    public ResponseEntity<List<UfModel>> cadastrarUF(@Valid @RequestBody UfCreateDTO requestDTO) {
-        List<UfModel> listaUF = ufService.cadastrarUF(requestDTO);
-        return ResponseEntity.ok(listaUF);
+    @ResponseStatus(HttpStatus.OK)
+    public List<UfModel> cadastrarUF(@Valid @RequestBody UfCreateDTO requestDTO) {
+        return ufService.cadastrarUF(requestDTO);
     }
 
     @GetMapping
-    public ResponseEntity<Object> buscarPorFiltro(
+    @ResponseStatus(HttpStatus.OK)
+    public Object buscarPorFiltro(
             @RequestParam(name = "codigoUF", required = false) Long codigoUF,
             @RequestParam(name = "sigla", required = false) String sigla,
             @RequestParam(name = "nome", required = false) String nome,
             @RequestParam(name = "status", required = false) Integer status
     ) {
-        Object response = ufService.buscarPorFiltro(codigoUF, sigla, nome, status);
-        return ResponseEntity.ok(response);
+        return ufService.buscarPorFiltro(codigoUF, sigla, nome, status);
     }
 
     @PutMapping
-    public ResponseEntity<List<UfModel>> atualizarUF(@Valid @RequestBody UfUpdateDTO ufAtualizada) {
-        List<UfModel> listaUF = ufService.atualizarUF(ufAtualizada);
-        return ResponseEntity.ok(listaUF);
+    @ResponseStatus(HttpStatus.OK)
+    public List<UfModel> atualizarUF(@Valid @RequestBody UfUpdateDTO ufAtualizada) {
+        return ufService.atualizarUF(ufAtualizada);
     }
 
     @DeleteMapping("/{codigoUF}")
-    public ResponseEntity<List<UfModel>> deletarUF(@PathVariable Long codigoUF) {
-        List<UfModel> listaUF = ufService.deletarUF(codigoUF);
-        return ResponseEntity.ok(listaUF);
+    public ResponseEntity<Void> deletarUF(@PathVariable Long codigoUF) {
+        ufService.deletarUF(codigoUF);
+        return ResponseEntity.noContent().build();
     }
 
 }

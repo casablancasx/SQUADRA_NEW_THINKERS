@@ -9,19 +9,21 @@ import br.com.squadra.squadrajavabootcamp2024.mappers.BairroMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BairroService {
 
     private final BairroRepository bairroRepository;
     private final MunicipioRepository municipioRepository;
     private final BairroMapper mapper;
 
+    @Transactional
     public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
 
         verificaSeMunicipioExiste(request.getCodigoMunicipio());
@@ -42,6 +44,7 @@ public class BairroService {
     }
 
 
+    @Transactional
     public List<BairroModel> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
 
         verificaSeMunicipioExiste(bairroAtualizado.getCodigoMunicipio());
@@ -57,11 +60,11 @@ public class BairroService {
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
 
-    public List<BairroModel> deletarBairro(Long codigoBairro) {
+    @Transactional
+    public void deletarBairro(Long codigoBairro) {
         BairroModel entity = bairroRepository.findById(codigoBairro)
                 .orElseThrow(() -> new ResourceNotFoundException("Bairro não encontrado."));
         bairroRepository.delete(entity);
-        return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
 
 

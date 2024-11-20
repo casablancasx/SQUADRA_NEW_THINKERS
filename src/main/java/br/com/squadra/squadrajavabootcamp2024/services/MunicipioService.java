@@ -8,14 +8,15 @@ import br.com.squadra.squadrajavabootcamp2024.mappers.MunicipioMapper;
 import br.com.squadra.squadrajavabootcamp2024.models.MunicipioModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.MunicipioRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.UfRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MunicipioService {
 
     private final MunicipioRepository municipioRepository;
@@ -23,7 +24,7 @@ public class MunicipioService {
 
     private final MunicipioMapper municipioMapper;
 
-
+    @Transactional
     public List<MunicipioModel> cadastrarMunicipio(MunicipioCreateDTO request) {
 
         verificarSeUfExiste(request.getCodigoUF());
@@ -48,6 +49,7 @@ public class MunicipioService {
         return municipios;
     }
 
+    @Transactional
     public List<MunicipioModel> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
 
         verificarSeUfExiste(municipioAtualizado.getCodigoUF());
@@ -65,14 +67,13 @@ public class MunicipioService {
 
     }
 
-    public List<MunicipioModel> deletarMunicipio(Long codigoMunicipio) {
+    @Transactional
+    public void deletarMunicipio(Long codigoMunicipio) {
 
         MunicipioModel entity = municipioRepository.findById(codigoMunicipio)
                 .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
 
         municipioRepository.delete(entity);
-
-        return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
     }
 
     private void  verificarDuplicidadeDeNomeExcetoParaMunicipio(String nome, Long codigoMunicipio) {

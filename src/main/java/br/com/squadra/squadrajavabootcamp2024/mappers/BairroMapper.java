@@ -4,7 +4,11 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.create.BairroCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.response.BairroResponseDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.BairroUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.models.BairroModel;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.ERROR, uses = {MunicipioMapper.class})

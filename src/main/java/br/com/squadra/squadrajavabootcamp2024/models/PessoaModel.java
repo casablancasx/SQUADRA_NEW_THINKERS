@@ -2,7 +2,14 @@ package br.com.squadra.squadrajavabootcamp2024.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +48,6 @@ public class PessoaModel {
 
     @JsonProperty("enderecos")
     public List<Object> getListaVazia() {
-        return enderecos != null ? List.of() : null;
+        return List.of();
     }
 }

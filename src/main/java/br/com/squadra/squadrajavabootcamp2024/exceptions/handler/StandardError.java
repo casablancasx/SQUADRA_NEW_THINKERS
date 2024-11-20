@@ -1,4 +1,4 @@
-package br.com.squadra.squadrajavabootcamp2024.infra;
+package br.com.squadra.squadrajavabootcamp2024.exceptions.handler;
 
 import lombok.*;
 

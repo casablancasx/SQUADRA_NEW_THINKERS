@@ -13,14 +13,15 @@ import br.com.squadra.squadrajavabootcamp2024.models.PessoaModel;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.EnderecoRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.PessoaRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PessoaService {
 
     private final PessoaRepository pessoaRepository;
@@ -31,6 +32,7 @@ public class PessoaService {
     private final PessoaMapper pessoaMapper;
 
 
+    @Transactional
     public List<PessoaModel> cadastrarPessoa(PessoaCreateDTO request) {
 
         validarSeBairrosEstaoCadastradosNoBancoDeDados(request.getEnderecos());
@@ -55,6 +57,7 @@ public class PessoaService {
         return pessoaModelList;
     }
 
+    @Transactional
     public List<PessoaModel> atualizarPessoa(PessoaUpdateDTO pessoaAtualizada) {
 
         PessoaModel pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
@@ -75,6 +78,7 @@ public class PessoaService {
         return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
 
+    @Transactional
     public List<PessoaModel> deletarPessoa(Long codigoPessoa) {
 
         PessoaModel entity = pessoaRepository.findById(codigoPessoa)
