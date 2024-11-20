@@ -79,14 +79,12 @@ public class PessoaService {
     }
 
     @Transactional
-    public List<PessoaModel> deletarPessoa(Long codigoPessoa) {
+    public void deletarPessoa(Long codigoPessoa) {
 
         PessoaModel entity = pessoaRepository.findById(codigoPessoa)
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
         pessoaRepository.delete(entity);
-
-        return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
 
     private void removeEnderecosCasoNaoExistaNaListaDeAtualizados(List<EnderecoModel> listaDeEnderecosAtualizada, PessoaModel pessoaExistente) {

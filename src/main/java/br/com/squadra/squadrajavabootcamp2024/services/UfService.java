@@ -56,10 +56,9 @@ public class UfService {
     }
 
     @Transactional
-    public List<UfModel> deletarUF(Long codigoUF) {
+    public void deletarUF(Long codigoUF) {
         UfModel entity = ufrepository.findById(codigoUF).orElseThrow(() -> new ResourceNotFoundException("O códigoUF(" + codigoUF + ") não foi encontrado."));
         ufrepository.delete(entity);
-        return ufrepository.findAllByOrderByCodigoUFDesc();
     }
 
 
