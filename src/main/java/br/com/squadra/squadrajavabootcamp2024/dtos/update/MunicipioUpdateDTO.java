@@ -19,7 +19,7 @@ public class MunicipioUpdateDTO {
     private Long codigoUF;
 
     @NotBlank(message = "O campo nome é obrigatório")
-    @Pattern(regexp = "^[A-Z]+$", message = "O campo nome deve conter apenas letras maiúsculas")
+    @Pattern(regexp = "^[A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ\s]+$", message = "O campo nome deve conter apenas letras maiúsculas")
     private String nome;
 
     @NotNull(message = "O campo status é obrigatório")

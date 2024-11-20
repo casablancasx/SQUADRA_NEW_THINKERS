@@ -24,19 +24,13 @@ public class UfService {
 
     public List<UfModel> cadastrarUF(UfCreateDTO requestDTO){
 
-        if (ufrepository.existsByNome(requestDTO.getNome())) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de nome " + requestDTO.getNome() + " cadastrada.");
-        }
-
-        if (ufrepository.existsBySigla(requestDTO.getSigla())) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de sigla " + requestDTO.getSigla() + " cadastrada.");
-        }
-
+        verificarDuplicidadeDeNomeOuSigla(requestDTO.getNome(), requestDTO.getSigla());
         UfModel model = mapper.toEntity(requestDTO);
         ufrepository.save(model);
-
         return ufrepository.findAllByOrderByCodigoUFDesc();
     }
+
+
 
     public Object buscarPorFiltro(Long codigoUF, String sigla, String nome, Integer status) {
         List<UfModel> listaUfs = ufrepository.findByFiltro(codigoUF, sigla, nome, status);
@@ -51,14 +45,7 @@ public class UfService {
 
     public List<UfModel> atualizarUF(UfUpdateDTO ufAtualizada) {
 
-        if (ufrepository.existsByNomeAndCodigoUFNot(ufAtualizada.getNome(), ufAtualizada.getCodigoUF())) {
-            throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF de nome " + ufAtualizada.getNome() + " cadastrada.");
-        }
-
-        if (ufrepository.existsBySiglaAndCodigoUFNot(ufAtualizada.getSigla(), ufAtualizada.getCodigoUF())) {
-            throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF de sigla " + ufAtualizada.getSigla() + " cadastrada.");
-        }
-
+       verificarDuplicidadeDeNomeOuSiglaExcetoParaUF(ufAtualizada.getNome(), ufAtualizada.getSigla(), ufAtualizada.getCodigoUF());
         UfModel ufExistente = ufrepository.findByCodigoUF(ufAtualizada.getCodigoUF()).orElseThrow(() -> new ResourceNotFoundException("O códigoUF(" + ufAtualizada.getCodigoUF() + ") não foi encontrado."));
         mapper.atualizarUF(ufAtualizada, ufExistente);
         ufrepository.save(ufExistente);
@@ -67,16 +54,34 @@ public class UfService {
     }
 
     public List<UfModel> deletarUF(Long codigoUF) {
-        Optional<UfModel> optional = ufrepository.findByCodigoUF(codigoUF);
-        if (optional.isEmpty()) {
-            throw new ResourceNotFoundException("O códigoUF(" + codigoUF + ") não foi encontrado.");
-        }
-        ufrepository.delete(optional.get());
+        UfModel entity = ufrepository.findById(codigoUF).orElseThrow(() -> new ResourceNotFoundException("O códigoUF(" + codigoUF + ") não foi encontrado."));
+        ufrepository.delete(entity);
         return ufrepository.findAllByOrderByCodigoUFDesc();
     }
 
 
     private boolean retornoDeveriaSerUmUnicoObjeto(Long codigoUF, String sigla, String nome) {
         return codigoUF != null || sigla != null || nome != null;
+    }
+
+
+    private void verificarDuplicidadeDeNomeOuSiglaExcetoParaUF( String nome, String sigla,Long codigoUF) {
+        if (ufrepository.existsByNomeAndCodigoUFNot(nome, codigoUF)) {
+            throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF de nome " + nome + " cadastrada.");
+        }
+
+        if (ufrepository.existsBySiglaAndCodigoUFNot(sigla, codigoUF)) {
+            throw new ResourceAlreadyExistException("Não foi possível atualizar UF no banco de dados. Já existe uma UF de sigla " + sigla + " cadastrada.");
+        }
+    }
+
+    private void verificarDuplicidadeDeNomeOuSigla(String nome, String sigla) {
+        if (ufrepository.existsByNome(nome)) {
+            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de nome " + nome + " cadastrada.");
+        }
+
+        if (ufrepository.existsBySigla(sigla)) {
+            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de sigla " + sigla+ " cadastrada.");
+        }
     }
 }
