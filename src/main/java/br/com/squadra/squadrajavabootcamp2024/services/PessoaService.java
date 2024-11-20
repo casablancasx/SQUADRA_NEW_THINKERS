@@ -35,12 +35,10 @@ public class PessoaService {
 
         validarSeBairrosEstaoCadastradosNoBancoDeDados(request.getEnderecos());
 
-        if (pessoaRepository.existsByLogin(request.getLogin())) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir pessoa no banco de dados. Já existe uma pessoa de login " + request.getLogin() + " cadastrado.");
-        }
+        verificarDuplicidadeDeLogin(request.getLogin());
 
         PessoaModel pessoaModel = pessoaMapper.toEntity(request);
-        pessoaModel.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoaModel));
+
         pessoaRepository.save(pessoaModel);
 
         return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
@@ -62,7 +60,7 @@ public class PessoaService {
         PessoaModel pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
-        validarSeEnderecosEstaoCadastradosNoBanco(pessoaAtualizada.getEnderecos());
+        verificarSeEnderecosExistem(pessoaAtualizada.getEnderecos());
 
         List<EnderecoModel> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
 
@@ -70,20 +68,19 @@ public class PessoaService {
 
         pessoaMapper.atualizar(pessoaAtualizada, pessoaExistente);
 
-        if (pessoaRepository.existsByLoginAndAndCodigoPessoaNot(pessoaExistente.getLogin(), pessoaExistente.getCodigoPessoa())) {
-            throw new ResourceAlreadyExistException("Não foi possível atualizar pessoa no banco de dados. Já existe uma pessoa de login " + pessoaExistente.getLogin() + " cadastrado.");
-        }
+        verificarDuplicidadeDeLoginExcetoParaPessoa(pessoaExistente.getLogin(), pessoaExistente.getCodigoPessoa());
 
         pessoaRepository.save(pessoaExistente);
+
         return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
 
     public List<PessoaModel> deletarPessoa(Long codigoPessoa) {
 
-        PessoaModel pessoa = pessoaRepository.findById(codigoPessoa)
+        PessoaModel entity = pessoaRepository.findById(codigoPessoa)
                 .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada."));
 
-        pessoaRepository.delete(pessoa);
+        pessoaRepository.delete(entity);
 
         return pessoaRepository.findAllByOrderByCodigoPessoaDesc();
     }
@@ -102,9 +99,21 @@ public class PessoaService {
         enderecoRepository.deleteAll(enderecosParaRemover);
     }
 
-    private void validarSeEnderecosEstaoCadastradosNoBanco(List<EnderecoUpdateDTO> enderecosAtualizados) {
+    private void verificarDuplicidadeDeLoginExcetoParaPessoa(String login, Long codigoPessoa) {
+        if (pessoaRepository.existsByLoginAndAndCodigoPessoaNot(login, codigoPessoa)) {
+            throw new ResourceAlreadyExistException("Não foi possível atualizar pessoa no banco de dados. Já existe uma pessoa de login " + login + " cadastrado.");
+        }
+    }
+
+    private void verificarDuplicidadeDeLogin(String login) {
+        if (pessoaRepository.existsByLogin(login)) {
+            throw new ResourceAlreadyExistException("Não foi possível incluir pessoa no banco de dados. Já existe uma pessoa de login " + login + " cadastrado.");
+        }
+    }
+
+    private void verificarSeEnderecosExistem(List<EnderecoUpdateDTO> enderecosAtualizados) {
         for (EnderecoUpdateDTO endereco : enderecosAtualizados) {
-            if (!enderecoRepository.existsByCodigoEndereco(endereco.getCodigoEndereco())) {
+            if (!enderecoRepository.existsByCodigoEndereco(endereco.getCodigoEndereco()) && endereco.getCodigoEndereco() != null) {
                 throw new ResourceNotFoundException("Não foi possível incluir pessoa no banco de dados. Não existe um endereço com código " + endereco.getCodigoEndereco() + " cadastrado.");
             }
         }
