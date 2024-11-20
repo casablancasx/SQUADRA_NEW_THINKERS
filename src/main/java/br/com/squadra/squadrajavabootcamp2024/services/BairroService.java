@@ -24,11 +24,8 @@ public class BairroService {
 
     public List<BairroModel> cadastrarBairro(BairroCreateDTO request) {
 
-        validarSeMunicipioEstaCadastradoNoBancoDeDados(request.getCodigoMunicipio());
-
-        if (bairroRepository.existsByNome(request.getNome())) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir bairro no banco de dados. Já existe um bairro de nome " + request.getNome() + " cadastrado.");
-        }
+        verificaSeMunicipioExiste(request.getCodigoMunicipio());
+        verificaDuplicidadeDeNome(request.getNome());
 
         bairroRepository.save(mapper.toEntity(request));
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
@@ -47,11 +44,9 @@ public class BairroService {
 
     public List<BairroModel> atualizarBairro(BairroUpdateDTO bairroAtualizado) {
 
-        validarSeMunicipioEstaCadastradoNoBancoDeDados(bairroAtualizado.getCodigoMunicipio());
+        verificaSeMunicipioExiste(bairroAtualizado.getCodigoMunicipio());
 
-        if (bairroRepository.existsByNomeAndCodigoBairroNot(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro())) {
-            throw new ResourceAlreadyExistException("Não foi possível atualizar bairro no banco de dados. Já existe um bairro de nome " + bairroAtualizado.getNome() + " cadastrado.");
-        }
+        verificaDuplicidadeDeNomeExcetoParaBairro(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro());
 
         BairroModel bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
                 .orElseThrow(() -> new IllegalArgumentException("Bairro não encontrado"));
@@ -69,7 +64,20 @@ public class BairroService {
         return bairroRepository.findAllByOrderByCodigoBairroDesc();
     }
 
-    private void validarSeMunicipioEstaCadastradoNoBancoDeDados(Long codigoMunicipio) {
+
+    private void verificaDuplicidadeDeNomeExcetoParaBairro(String nome, Long codigoBairro) {
+        if (bairroRepository.existsByNomeAndCodigoBairroNot(nome, codigoBairro)) {
+            throw new ResourceAlreadyExistException("Não foi possível atualizar bairro no banco de dados. Já existe um bairro de nome " + nome + " cadastrado.");
+        }
+    }
+
+    private void verificaDuplicidadeDeNome(String nome) {
+        if (bairroRepository.existsByNome(nome)) {
+            throw new ResourceAlreadyExistException("Não foi possível incluir bairro no banco de dados. Já existe um bairro de nome " + nome + " cadastrado.");
+        }
+    }
+
+    private void verificaSeMunicipioExiste(Long codigoMunicipio) {
         if (!municipioRepository.existsByCodigoMunicipio(codigoMunicipio)) {
             throw new ResourceNotFoundException("Não foi encontrado município com o código " + codigoMunicipio + ".");
         }
