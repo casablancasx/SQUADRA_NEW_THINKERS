@@ -26,13 +26,12 @@ public class MunicipioService {
 
     public List<MunicipioModel> cadastrarMunicipio(MunicipioCreateDTO request) {
 
-        verificarSeUfExisteNoBanco(request.getCodigoUF());
+        verificarSeUfExiste(request.getCodigoUF());
 
-        if (municipioRepository.existsByNome(request.getNome())) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir município no banco de dados. Já existe um município de nome " + request.getNome() + " cadastrado.");
-        }
+        verificarDuplicidadeDeNome(request.getNome());
 
         municipioRepository.save(municipioMapper.toEntity(request));
+
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
 
     }
@@ -51,16 +50,15 @@ public class MunicipioService {
 
     public List<MunicipioModel> atualizarMunicipio(MunicipioUpdateDTO municipioAtualizado) {
 
-        verificarSeUfExisteNoBanco(municipioAtualizado.getCodigoUF());
+        verificarSeUfExiste(municipioAtualizado.getCodigoUF());
 
-        if (municipioRepository.existsByNomeAndCodigoMunicipioNot(municipioAtualizado.getNome(), municipioAtualizado.getCodigoMunicipio())) {
-            throw new ResourceAlreadyExistException("Não foi possível atualizar município no banco de dados. Já existe um município de nome " + municipioAtualizado.getNome() + " cadastrado.");
-        }
+        verificarDuplicidadeDeNomeExcetoParaMunicipio(municipioAtualizado.getNome(), municipioAtualizado.getCodigoMunicipio());
 
         MunicipioModel municipioExistente = municipioRepository.findById(municipioAtualizado.getCodigoMunicipio())
                 .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
 
         municipioMapper.atualizarMunicipio(municipioAtualizado, municipioExistente);
+
         municipioRepository.save(municipioExistente);
 
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
@@ -68,13 +66,28 @@ public class MunicipioService {
     }
 
     public List<MunicipioModel> deletarMunicipio(Long codigoMunicipio) {
-        MunicipioModel municipio = municipioRepository.findById(codigoMunicipio)
+
+        MunicipioModel entity = municipioRepository.findById(codigoMunicipio)
                 .orElseThrow(() -> new ResourceNotFoundException("Município não encontrado."));
-        municipioRepository.delete(municipio);
+
+        municipioRepository.delete(entity);
+
         return municipioRepository.findAllByOrderByCodigoMunicipioDesc();
     }
 
-    private void verificarSeUfExisteNoBanco(Long codigoUF) {
+    private void  verificarDuplicidadeDeNomeExcetoParaMunicipio(String nome, Long codigoMunicipio) {
+        if (municipioRepository.existsByNomeAndCodigoMunicipioNot(nome, codigoMunicipio)) {
+            throw new ResourceAlreadyExistException("Não foi possível atualizar município no banco de dados. Já existe um município de nome " + nome + " cadastrado.");
+        }
+    }
+
+    private void verificarDuplicidadeDeNome(String nome) {
+        if (municipioRepository.existsByNome(nome)) {
+            throw new ResourceAlreadyExistException("Não foi possível incluir município no banco de dados. Já existe um município de nome " + nome + " cadastrado.");
+        }
+    }
+
+    private void verificarSeUfExiste(Long codigoUF) {
         if (!ufRepository.existsByCodigoUF(codigoUF)) {
             throw new ResourceNotFoundException("Não foi encontrado UF com o código " + codigoUF + ".");
         }
