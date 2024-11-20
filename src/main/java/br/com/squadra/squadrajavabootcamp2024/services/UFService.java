@@ -47,7 +47,7 @@ public class UFService {
     @Transactional
     public List<UFEntity> atualizarUF(UFUpdateDTO ufAtualizada) {
 
-       verificarDuplicidadeDeNomeOuSiglaExcetoParaUF(ufAtualizada.getNome(), ufAtualizada.getSigla(), ufAtualizada.getCodigoUF());
+        verificarDuplicidadeDeNomeOuSiglaExcetoParaUF(ufAtualizada.getNome(), ufAtualizada.getSigla(), ufAtualizada.getCodigoUF());
         UFEntity ufExistente = ufrepository.findByCodigoUF(ufAtualizada.getCodigoUF()).orElseThrow(() -> new ResourceNotFoundException("O códigoUF(" + ufAtualizada.getCodigoUF() + ") não foi encontrado."));
         mapper.atualizarUF(ufAtualizada, ufExistente);
         ufrepository.save(ufExistente);
@@ -78,12 +78,12 @@ public class UFService {
     }
 
     private void verificarDuplicidadeDeNomeOuSigla(String nome, String sigla) {
-        if (ufrepository.existsByNome(nome)) {
-            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de nome " + nome + " cadastrada.");
-        }
-
         if (ufrepository.existsBySigla(sigla)) {
             throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de sigla " + sigla+ " cadastrada.");
+        }
+
+        if (ufrepository.existsByNome(nome)) {
+            throw new ResourceAlreadyExistException("Não foi possível incluir UF no banco de dados. Já existe uma UF de nome " + nome + " cadastrada.");
         }
     }
 }
