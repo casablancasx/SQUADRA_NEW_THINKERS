@@ -20,24 +20,22 @@ O projeto segue uma arquitetura modular e bem organizada, promovendo escalabilid
 4. **Camada de DTO** - Utiliza o MapStruct para converter entidades em DTOs, promovendo uma separação entre o modelo de dados e a representação da API.
 5. **Camada de Controlador** - Exponibiliza os endpoints da API e cuida da interação com os clientes, validando os dados de entrada e retornando respostas apropriadas.
 6. **Camada de Mapper** - Contém as interfaces que definem as conversões entre DTOs e entidades e vice-versa, utilizando o MapStruct para automatizar o mapeamento de dados.
-7. **Camada Infraestrutura (infra)** - Gerencia a configuração de tratamento de erros da aplicação:
+7. **Camada Exceptions** - Gerencia a configuração de tratamento de erros da aplicação:
     - **ExceptionHandler:** Responsável por interceptar e tratar exceções lançadas durante a execução, garantindo respostas personalizadas.
     - **StandardError:** Classe que padroniza o formato das respostas de erro.
+    - **ValidationError:** Classe que extende StandardError e adiciona informações específicas para erros de validação.
     - **Pacote Exceptions:** Contém exceções personalizadas para tratar casos específicos de erro de forma mais clara e organizada.
 
 ## Instalação e Configuração
 
-1. **Clone o repositório**:
-   ```bash
-   git clone <URL do repositório>
 
-2. **Banco de dados**:
+1. **Banco de dados**:
    - Crie um banco de dados Oracle e configure as credenciais no arquivo `application.properties`.
 
-3. **Construa o projeto**:
+2. **Construa o projeto**:
    ```bash
    mvn clean install
    
-4. **Execute a aplicação**:
+3. **Execute a aplicação**:
    ```bash
    mvn spring-boot:run
