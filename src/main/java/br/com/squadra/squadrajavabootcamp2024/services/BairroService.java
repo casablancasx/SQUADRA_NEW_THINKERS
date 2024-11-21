@@ -52,9 +52,10 @@ public class BairroService {
         verificaDuplicidadeDeNomeExcetoParaBairro(bairroAtualizado.getNome(), bairroAtualizado.getCodigoBairro());
 
         BairroEntity bairroExistente = bairroRepository.findById(bairroAtualizado.getCodigoBairro())
-                .orElseThrow(() -> new IllegalArgumentException("Bairro não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Não foi encontrado bairro com o código " + bairroAtualizado.getCodigoBairro() + "."));
 
         mapper.atualizarBairro(bairroAtualizado, bairroExistente);
+
         bairroRepository.save(bairroExistente);
 
         return bairroRepository.findAllByOrderByCodigoBairroDesc();

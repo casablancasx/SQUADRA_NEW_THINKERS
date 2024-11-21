@@ -4,6 +4,7 @@ package br.com.squadra.squadrajavabootcamp2024.exceptions.handler;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,6 +44,17 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<StandardError> invalidArgumentTypeException(MethodArgumentTypeMismatchException exception) {
+        StandardError error = StandardError.builder()
+                .mensagem("O Tipo de dado informado é invalido para o campo " + exception.getName() +
+                        " era esperado um valor do tipo " + exception.getRequiredType().getSimpleName() +
+                        " e foi informado " + exception.getValue() + " de tipo " + exception.getValue().getClass().getSimpleName())
+                .status(422)
+                .build();
+        return ResponseEntity.status(error.getStatus()).body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<StandardError> HttpMessageNotReadableException(MethodArgumentTypeMismatchException exception) {
         StandardError error = StandardError.builder()
                 .mensagem("O Tipo de dado informado é invalido para o campo " + exception.getName() +
                         " era esperado um valor do tipo " + exception.getRequiredType().getSimpleName() +

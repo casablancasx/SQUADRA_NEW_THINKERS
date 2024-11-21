@@ -4,12 +4,12 @@ import br.com.squadra.squadrajavabootcamp2024.dtos.create.EnderecoCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.create.PessoaCreateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.EnderecoUpdateDTO;
 import br.com.squadra.squadrajavabootcamp2024.dtos.update.PessoaUpdateDTO;
+import br.com.squadra.squadrajavabootcamp2024.entities.EnderecoEntity;
+import br.com.squadra.squadrajavabootcamp2024.entities.PessoaEntity;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
 import br.com.squadra.squadrajavabootcamp2024.mappers.EnderecoMapper;
 import br.com.squadra.squadrajavabootcamp2024.mappers.PessoaMapper;
-import br.com.squadra.squadrajavabootcamp2024.entities.EnderecoEntity;
-import br.com.squadra.squadrajavabootcamp2024.entities.PessoaEntity;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.EnderecoRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.PessoaRepository;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +58,7 @@ public class PessoaService {
         return pessoaEntityList;
     }
 
-    @Transactional
+
     public List<PessoaEntity> atualizarPessoa(PessoaUpdateDTO pessoaAtualizada) {
 
         PessoaEntity pessoaExistente = pessoaRepository.findById(pessoaAtualizada.getCodigoPessoa())
@@ -65,9 +66,13 @@ public class PessoaService {
 
         verificarSeEnderecosExistem(pessoaAtualizada.getEnderecos());
 
-        List<EnderecoEntity> listaDeEnderecosAtualizada = pessoaAtualizada.getEnderecos().stream().map(enderecoMapper::mapUpdateToEntity).toList();
 
-        removeEnderecosCasoNaoExistaNaListaDeAtualizados(listaDeEnderecosAtualizada, pessoaExistente);
+        List<Long> idsEnderecosAtualizados = pessoaAtualizada.getEnderecos()
+                .stream().map(EnderecoUpdateDTO::getCodigoEndereco)
+                .filter(Objects::nonNull).toList();
+
+
+        removeEnderecosCasoNaoExistaNaListaDeAtualizados(idsEnderecosAtualizados, pessoaExistente);
 
         pessoaMapper.atualizar(pessoaAtualizada, pessoaExistente);
 
@@ -87,15 +92,12 @@ public class PessoaService {
         pessoaRepository.delete(entity);
     }
 
-    private void removeEnderecosCasoNaoExistaNaListaDeAtualizados(List<EnderecoEntity> listaDeEnderecosAtualizada, PessoaEntity pessoaExistente) {
-        List<Long> listaDeEnderecosAtualizadaIds = listaDeEnderecosAtualizada.stream().map(EnderecoEntity::getCodigoEndereco).toList();
+    private void removeEnderecosCasoNaoExistaNaListaDeAtualizados(List<Long> idsEnderecosAtualizados, PessoaEntity pessoaExistente) {
         List<EnderecoEntity> enderecosParaRemover = new ArrayList<>();
 
-        for (EnderecoEntity enderecoExistente : pessoaExistente.getEnderecos()) {
-            if (!listaDeEnderecosAtualizadaIds.contains(enderecoExistente.getCodigoEndereco())) {
-                enderecosParaRemover.add(enderecoExistente);
-            }
-        }
+        pessoaExistente.getEnderecos().stream()
+                .filter(endereco -> !idsEnderecosAtualizados.contains(endereco.getCodigoEndereco()))
+                .forEach(enderecosParaRemover::add);
 
         pessoaExistente.getEnderecos().removeAll(enderecosParaRemover);
         enderecoRepository.deleteAll(enderecosParaRemover);
@@ -114,18 +116,20 @@ public class PessoaService {
     }
 
     private void verificarSeEnderecosExistem(List<EnderecoUpdateDTO> enderecosAtualizados) {
-        for (EnderecoUpdateDTO endereco : enderecosAtualizados) {
-            if (!enderecoRepository.existsByCodigoEndereco(endereco.getCodigoEndereco()) && endereco.getCodigoEndereco() != null) {
-                throw new ResourceNotFoundException("Não foi possível incluir pessoa no banco de dados. Não existe um endereço com código " + endereco.getCodigoEndereco() + " cadastrado.");
+        enderecosAtualizados.forEach(endereco ->{
+            Long codigoEndereco = endereco.getCodigoEndereco();
+            if (!enderecoRepository.existsByCodigoEndereco(codigoEndereco) && codigoEndereco != null) {
+                throw new ResourceNotFoundException("Não foi possível incluir pessoa no banco de dados. Não existe um endereço com código " + codigoEndereco + " cadastrado.");
             }
-        }
+        });
     }
 
-    private void validarSeBairrosEstaoCadastradosNoBancoDeDados(List<EnderecoCreateDTO> enderecos) {
-        for (EnderecoCreateDTO endereco : enderecos) {
-            if (!bairroRepository.existsByCodigoBairro(endereco.getCodigoBairro())) {
-                throw new ResourceNotFoundException("Não foi possível incluir pessoa no banco de dados. Não existe um bairro com código " + endereco.getCodigoBairro() + " cadastrado.");
-            }
-        }
-    }
+   private void validarSeBairrosEstaoCadastradosNoBancoDeDados(List<EnderecoCreateDTO> enderecos) {
+       enderecos.forEach(endereco -> {
+           Long codigoBairro = endereco.getCodigoBairro();
+           if (!bairroRepository.existsByCodigoBairro(codigoBairro) && codigoBairro != null) {
+               throw new ResourceNotFoundException("Não foi possível incluir pessoa no banco de dados. Não existe um bairro com código " + codigoBairro + " cadastrado.");
+           }
+       });
+   }
 }
