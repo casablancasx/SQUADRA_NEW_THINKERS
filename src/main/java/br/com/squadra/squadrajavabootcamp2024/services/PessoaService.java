@@ -26,7 +26,6 @@ import java.util.Objects;
 public class PessoaService {
 
     private final PessoaRepository pessoaRepository;
-    private final EnderecoMapper enderecoMapper;
     private final EnderecoRepository enderecoRepository;
     private final BairroRepository bairroRepository;
 
