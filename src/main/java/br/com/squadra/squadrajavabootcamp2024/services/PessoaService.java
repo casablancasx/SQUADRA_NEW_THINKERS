@@ -8,7 +8,6 @@ import br.com.squadra.squadrajavabootcamp2024.entities.EnderecoEntity;
 import br.com.squadra.squadrajavabootcamp2024.entities.PessoaEntity;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceAlreadyExistException;
 import br.com.squadra.squadrajavabootcamp2024.exceptions.ResourceNotFoundException;
-import br.com.squadra.squadrajavabootcamp2024.mappers.EnderecoMapper;
 import br.com.squadra.squadrajavabootcamp2024.mappers.PessoaMapper;
 import br.com.squadra.squadrajavabootcamp2024.repositories.BairroRepository;
 import br.com.squadra.squadrajavabootcamp2024.repositories.EnderecoRepository;
